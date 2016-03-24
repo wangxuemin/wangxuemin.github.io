@@ -1,0 +1,896 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nginx," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="补丁的diff文件在这里:http://leaf.dragonflybsd.org/~sephe/ngx_soreuseport.diff
+该补丁只是一个简单实现演示，很多东西没有考虑到，作者也只是简单验证了使用REUSEPOORT后的效果(正式补丁后来正式提交了 见我的博客)
+The basic idea of the above patch is:
+
+Defer the listen sock">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个nginx_reuseport 简单补丁实现">
+<meta property="og:url" content="http://yoursite.com/2015/07/25/一个nginx_reuseport 简单补丁实现/index.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="补丁的diff文件在这里:http://leaf.dragonflybsd.org/~sephe/ngx_soreuseport.diff
+该补丁只是一个简单实现演示，很多东西没有考虑到，作者也只是简单验证了使用REUSEPOORT后的效果(正式补丁后来正式提交了 见我的博客)
+The basic idea of the above patch is:
+
+Defer the listen sock">
+<meta property="og:updated_time" content="2016-03-24T17:47:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个nginx_reuseport 简单补丁实现">
+<meta name="twitter:description" content="补丁的diff文件在这里:http://leaf.dragonflybsd.org/~sephe/ngx_soreuseport.diff
+该补丁只是一个简单实现演示，很多东西没有考虑到，作者也只是简单验证了使用REUSEPOORT后的效果(正式补丁后来正式提交了 见我的博客)
+The basic idea of the above patch is:
+
+Defer the listen sock">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 一个nginx_reuseport 简单补丁实现 | mumumuwudi的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一个nginx_reuseport 简单补丁实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-07-25T01:17:37-07:00" content="2015-07-25">
+              2015-07-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/nginx/" itemprop="url" rel="index">
+                    <span itemprop="name">nginx</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>补丁的diff文件在这里:<br><a href="http://leaf.dragonflybsd.org/~sephe/ngx_soreuseport.diff" target="_blank" rel="external">http://leaf.dragonflybsd.org/~sephe/ngx_soreuseport.diff</a></p>
+<p>该补丁只是一个简单实现演示，很多东西没有考虑到，作者也只是简单验证了使用REUSEPOORT后的效果(正式补丁<br>后来正式提交了 见我的博客)</p>
+<p>The basic idea of the above patch is:</p>
+<ul>
+<li>Defer the listen socket creation until work processes are forked</li>
+<li>Work process creates listen socket, and set SO_REUSEPORT before bind(2)</li>
+<li>Accept mutex is no longer needed, since worker process is not<br>contended on the single listen socket anymore</li>
+</ul>
+<p>基本实现思想：</p>
+<p>—-等工作进程创建后才开始监听listen socket<br>—-工作进程创建listen socket,  在bind调用之前设置SO_REUSEPORT选项<br>—-Accpet_mux互斥锁已经不需要了，因为所有工作进程不在使用同一个listensocket</p>
+<p>下面主要对该diff文件加了一下注释:</p>
+<pre><code class="cpp"><span class="meta"># HG changeset patch</span>
+<span class="meta"># User Sepherosa Ziehau &lt;sepherosa@gmail.com&gt;</span>
+<span class="meta"># Date 1374824628 -28800</span>
+<span class="meta">#      Fri Jul 26 15:43:48 2013 +0800</span>
+<span class="meta"># Node ID 55ad072b8934d3eea6d84c3c694c5f8bd7b37a70</span>
+<span class="meta"># Parent  6d73e0dc4f647afd13a9daafc7cc7b061b2689dc</span>
+<span class="meta">#Initial SO_REUSEPORT support</span>
+
+
+<span class="comment">//**配置相关，不详细解释**</span>
+<span class="keyword">static</span> <span class="keyword">ngx_conf_enum_t</span>  ngx_debug_points[] = {
+       <span class="number">0</span>,
+       <span class="literal">NULL</span> },
+
++    { ngx_string(<span class="string">"so_reuseport"</span>),
++      NGX_MAIN_CONF|NGX_DIRECT_CONF|NGX_CONF_TAKE1,
++      ngx_set_so_reuseport,
++      <span class="number">0</span>,
++      <span class="number">0</span>,
++      <span class="literal">NULL</span> },
++
+     { ngx_string(<span class="string">"debug_points"</span>),
+       NGX_MAIN_CONF|NGX_DIRECT_CONF|NGX_CONF_TAKE1,
+       ngx_conf_set_enum_slot,
+
+     <span class="keyword">return</span> NGX_CONF_OK;
+ }
++
++
++<span class="keyword">static</span> <span class="keyword">char</span> *
++ngx_set_so_reuseport(<span class="keyword">ngx_conf_t</span> *cf, <span class="keyword">ngx_command_t</span> *cmd, <span class="keyword">void</span> *conf)
++{
++    <span class="keyword">ngx_str_t</span>        *value;
++    <span class="keyword">ngx_core_conf_t</span>  *ccf;
++
++    ccf = (<span class="keyword">ngx_core_conf_t</span> *) conf;
++
++    value = (<span class="keyword">ngx_str_t</span> *) cf-&gt;args-&gt;elts;
++
++    <span class="keyword">if</span> (ngx_strcmp(value[<span class="number">1</span>].data, <span class="string">"on"</span>) == <span class="number">0</span>) {
++        ccf-&gt;so_reuseport = <span class="number">1</span>;
++    } <span class="keyword">else</span> <span class="keyword">if</span> (ngx_strcmp(value[<span class="number">1</span>].data, <span class="string">"off"</span>) == <span class="number">0</span>) {
++        ccf-&gt;so_reuseport = <span class="number">0</span>;
++    } <span class="keyword">else</span> {
++        <span class="keyword">return</span> <span class="string">"invalid value"</span>;
++    }
++    <span class="keyword">return</span> NGX_CONF_OK;
++}
+
+
+diff -r <span class="number">6</span>d73e0dc4f64 -r <span class="number">55</span>ad072b8934 src/core/ngx_connection.c
+--- a/src/core/ngx_connection.c Thu Jul <span class="number">25</span> <span class="number">12</span>:<span class="number">46</span>:<span class="number">03</span> <span class="number">2013</span> +<span class="number">0400</span>
++++ b/src/core/ngx_connection.c Fri Jul <span class="number">26</span> <span class="number">15</span>:<span class="number">43</span>:<span class="number">48</span> <span class="number">2013</span> +<span class="number">0800</span>
+ <span class="keyword">ngx_int_t</span>
+ ngx_open_listening_sockets(<span class="keyword">ngx_cycle_t</span> *cycle)
+ {
+-    <span class="keyword">int</span>               reuseaddr;
++    <span class="keyword">int</span>               reuseaddr, reuseport;
+     <span class="keyword">ngx_uint_t</span>        i, tries, failed;
+     <span class="keyword">ngx_err_t</span>         err;
+     <span class="keyword">ngx_log_t</span>        *<span class="built_in">log</span>;
+     <span class="keyword">ngx_socket_t</span>      s;
+     <span class="keyword">ngx_listening_t</span>  *ls;
++    <span class="keyword">ngx_core_conf_t</span>  *ccf;
+
+     reuseaddr = <span class="number">1</span>;
++    reuseport = <span class="number">0</span>;
+ <span class="meta">#<span class="meta-keyword">if</span> (NGX_SUPPRESS_WARN)</span>
+     failed = <span class="number">0</span>;
+ <span class="meta">#<span class="meta-keyword">endif</span></span>
+
++    ccf = (<span class="keyword">ngx_core_conf_t</span> *) ngx_get_conf(cycle-&gt;conf_ctx, ngx_core_module);
++    <span class="keyword">if</span> (ccf-&gt;so_reuseport) {
++        reuseaddr = <span class="number">0</span>;
++        reuseport = <span class="number">1</span>;
++    }
++
+     <span class="built_in">log</span> = cycle-&gt;<span class="built_in">log</span>;
+
+                 <span class="keyword">return</span> NGX_ERROR;
+             }
+
+-            <span class="keyword">if</span> (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
+-                           (<span class="keyword">const</span> <span class="keyword">void</span> *) &amp;reuseaddr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>))
+-                == <span class="number">-1</span>)
+-            {
+-                ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_socket_errno,
+-                              <span class="string">"setsockopt(SO_REUSEADDR) %V failed"</span>,
+-                              &amp;ls[i].addr_text);
++            <span class="keyword">if</span> (reuseaddr) {
++                <span class="keyword">if</span> (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
++                               (<span class="keyword">const</span> <span class="keyword">void</span> *) &amp;reuseaddr, <span class="keyword">sizeof</span>(<span class="keyword">int</span>))
++                    == <span class="number">-1</span>)
++                {
++                    ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_socket_errno,
++                                  <span class="string">"setsockopt(SO_REUSEADDR) %V failed"</span>,
++                                  &amp;ls[i].addr_text);
+
+-                <span class="keyword">if</span> (ngx_close_socket(s) == <span class="number">-1</span>) {
++                    <span class="keyword">if</span> (ngx_close_socket(s) == <span class="number">-1</span>) {
++                        ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_socket_errno,
++                                      ngx_close_socket_n <span class="string">" %V failed"</span>,
++                                      &amp;ls[i].addr_text);
++                    }
++
++                    <span class="keyword">return</span> NGX_ERROR;
++                }
++            }
+             <span class="comment">//***********************************************************</span>
++            <span class="keyword">if</span> (reuseport) {  <span class="comment">//在listen socket增加了设置SO_REUSEPORT的选项</span>
+             <span class="comment">//***********************************************************</span>
++                <span class="keyword">if</span> (setsockopt(s, SOL_SOCKET, SO_REUSEPORT,
++                               (<span class="keyword">const</span> <span class="keyword">void</span> *) &amp;reuseport, <span class="keyword">sizeof</span>(<span class="keyword">int</span>)) 
++                    == <span class="number">-1</span>)
++                {
+                     ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_socket_errno,
+-                                  ngx_close_socket_n <span class="string">" %V failed"</span>,
++                                  <span class="string">"setsockopt(SO_REUSEPORT) %V failed"</span>,
+                                   &amp;ls[i].addr_text);
++
++                    <span class="keyword">if</span> (ngx_close_socket(s) == <span class="number">-1</span>) {
++                        ngx_log_error(NGX_LOG_EMERG, <span class="built_in">log</span>, ngx_socket_errno,
++                                      ngx_close_socket_n <span class="string">" %V failed"</span>,
++                                      &amp;ls[i].addr_text);
++                    }
++
++                    <span class="keyword">return</span> NGX_ERROR;
+                 }
+-
+-                <span class="keyword">return</span> NGX_ERROR;
+             }
+
+
+diff -r <span class="number">6</span>d73e0dc4f64 -r <span class="number">55</span>ad072b8934 src/core/ngx_cycle.c
+--- a/src/core/ngx_cycle.c  Thu Jul <span class="number">25</span> <span class="number">12</span>:<span class="number">46</span>:<span class="number">03</span> <span class="number">2013</span> +<span class="number">0400</span>
++++ b/src/core/ngx_cycle.c  Fri Jul <span class="number">26</span> <span class="number">15</span>:<span class="number">43</span>:<span class="number">48</span> <span class="number">2013</span> +<span class="number">0800</span>
+         }
+     }
+     <span class="comment">//*************************************************</span>
+     <span class="comment">//此处为master 主进程调用init_cycle中不再创建监听socket</span>
+     <span class="comment">//*************************************************</span>
+-    <span class="keyword">if</span> (ngx_open_listening_sockets(cycle) != NGX_OK) {
+-        <span class="keyword">goto</span> failed;
+-    }
++    <span class="keyword">if</span> (!ccf-&gt;so_reuseport) {
++        <span class="keyword">if</span> (ngx_open_listening_sockets(cycle) != NGX_OK) {
++            <span class="keyword">goto</span> failed;
++        }
+
+-    <span class="keyword">if</span> (!ngx_test_config) {
+-        ngx_configure_listening_sockets(cycle);
++        <span class="keyword">if</span> (!ngx_test_config) {
++            ngx_configure_listening_sockets(cycle);
++        }
+     }
+
+
+diff -r <span class="number">6</span>d73e0dc4f64 -r <span class="number">55</span>ad072b8934 src/core/ngx_cycle.h
+--- a/src/core/ngx_cycle.h  Thu Jul <span class="number">25</span> <span class="number">12</span>:<span class="number">46</span>:<span class="number">03</span> <span class="number">2013</span> +<span class="number">0400</span>
++++ b/src/core/ngx_cycle.h  Fri Jul <span class="number">26</span> <span class="number">15</span>:<span class="number">43</span>:<span class="number">48</span> <span class="number">2013</span> +<span class="number">0800</span>
+      <span class="keyword">ngx_array_t</span>              env;
+      <span class="keyword">char</span>                   **environment;
+
++     <span class="keyword">unsigned</span>                 so_reuseport:<span class="number">1</span>;
++
+ <span class="meta">#<span class="meta-keyword">if</span> (NGX_THREADS)</span>
+      <span class="keyword">ngx_int_t</span>                worker_threads;
+      <span class="keyword">size_t</span>                   thread_stack_size;
+
+
+diff -r <span class="number">6</span>d73e0dc4f64 -r <span class="number">55</span>ad072b8934 src/event/ngx_event.c
+--- a/src/event/ngx_event.c Thu Jul <span class="number">25</span> <span class="number">12</span>:<span class="number">46</span>:<span class="number">03</span> <span class="number">2013</span> +<span class="number">0400</span>
++++ b/src/event/ngx_event.c Fri Jul <span class="number">26</span> <span class="number">15</span>:<span class="number">43</span>:<span class="number">48</span> <span class="number">2013</span> +<span class="number">0800</span>
+     ccf = (<span class="keyword">ngx_core_conf_t</span> *) ngx_get_conf(cycle-&gt;conf_ctx, ngx_core_module);
+     ecf = ngx_event_get_conf(cycle-&gt;conf_ctx, ngx_event_core_module);
+     <span class="comment">//***************************************************</span>
+     <span class="comment">//增加逻辑判断，如果使用了reuseport 则 accetp_mutx锁不生效</span>
+     <span class="comment">//***************************************************</span>
+-    <span class="keyword">if</span> (ccf-&gt;master &amp;&amp; ccf-&gt;worker_processes &gt; <span class="number">1</span> &amp;&amp; ecf-&gt;accept_mutex) {
++    <span class="keyword">if</span> (ccf-&gt;master &amp;&amp; ccf-&gt;worker_processes &gt; <span class="number">1</span> &amp;&amp; ecf-&gt;accept_mutex &amp;&amp;
++        !ccf-&gt;so_reuseport) {
+         ngx_use_accept_mutex = <span class="number">1</span>;
+         ngx_accept_mutex_held = <span class="number">0</span>;
+         ngx_accept_mutex_delay = ecf-&gt;accept_mutex_delay;
+
+
+diff -r <span class="number">6</span>d73e0dc4f64 -r <span class="number">55</span>ad072b8934 src/os/unix/ngx_process_cycle.c
+--- a/src/os/unix/ngx_process_cycle.c Thu Jul <span class="number">25</span> <span class="number">12</span>:<span class="number">46</span>:<span class="number">03</span> <span class="number">2013</span> +<span class="number">0400</span>
++++ b/src/os/unix/ngx_process_cycle.c Fri Jul <span class="number">26</span> <span class="number">15</span>:<span class="number">43</span>:<span class="number">48</span> <span class="number">2013</span> +<span class="number">0800</span>
+     <span class="keyword">ngx_core_conf_t</span>  *ccf;
+     <span class="keyword">ngx_listening_t</span>  *ls;
+
++    ccf = (<span class="keyword">ngx_core_conf_t</span> *) ngx_get_conf(cycle-&gt;conf_ctx, ngx_core_module);
+     <span class="comment">//**************************</span>
+     <span class="comment">// 在各个子进程中创建监听socket</span>
+     <span class="comment">//**************************</span>
++    <span class="keyword">if</span> (ccf-&gt;so_reuseport) {
++        ngx_open_listening_sockets(cycle);
++        ngx_configure_listening_sockets(cycle);
++    }
++
+     <span class="keyword">if</span> (ngx_set_environment(cycle, <span class="literal">NULL</span>) == <span class="literal">NULL</span>) {
+         <span class="comment">/* fatal */</span>
+         <span class="built_in">exit</span>(<span class="number">2</span>);
+     }
+
+-    ccf = (<span class="keyword">ngx_core_conf_t</span> *) ngx_get_conf(cycle-&gt;conf_ctx, ngx_core_module);
+</code></pre>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag">#nginx</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/07/24/OCR文字识别HTTP restapi接口设计/" rel="next" title="OCR文字识别HTTP restapi接口设计">
+                <i class="fa fa-chevron-left"></i> OCR文字识别HTTP restapi接口设计
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/07/25/NGINX最新版正式增加了对reuseport (SO_REUSEPORT) 的支持,正式补丁代码分析/" rel="prev" title="NGINX最新版正式增加了对reuseport (SO_REUSEPORT) 的支持,正式补丁代码分析">
+                NGINX最新版正式增加了对reuseport (SO_REUSEPORT) 的支持,正式补丁代码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
