@@ -461,7 +461,7 @@ body {
 .header-inner {
   margin: 0 auto;
   padding: 100px 0 70px;
-  width: 900px;
+  width: 800px;
 }
 @media (min-width: 1600px) {
   .container .header-inner {
@@ -473,7 +473,7 @@ body {
 }
 .main-inner {
   margin: 0 auto;
-  width: 900px;
+  width: 800px;
 }
 @media (min-width: 1600px) {
   .container .main-inner {
@@ -490,7 +490,7 @@ body {
 .footer-inner {
   box-sizing: border-box;
   margin: 20px auto;
-  width: 900px;
+  width: 800px;
 }
 @media (min-width: 1600px) {
   .container .footer-inner {
@@ -541,7 +541,7 @@ pre code {
 }
 .highlight figcaption {
   font-size: 0.85em;
-  color: #999;
+  color: #a5c261;
   line-height: 1em;
   margin-bottom: 1em;
 }
@@ -564,7 +564,7 @@ pre code {
   height: 20px;
 }
 pre .comment {
-  color: #999;
+  color: #a5c261;
 }
 pre .variable,
 pre .attribute,
@@ -620,7 +620,7 @@ pre .coffeescript .title {
 }
 pre .keyword,
 pre .javascript .function {
-  color: #c9c;
+  color: #c26230;
 }
 .full-image.full-image.full-image {
   border: none;
@@ -1512,7 +1512,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ff26e0;
+  background: #ffccb9;
 }
 .links-of-blogroll {
   font-size: 13px;

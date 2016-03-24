@@ -55,16 +55,24 @@
 
 
 
-<meta name="description" content="aaaaaa">
+<meta name="description" content="(旧存档丢了, 只剩下一张图 ⊙﹏⊙)
+nginx 工作进程运行示意图: 
+voidngx_process_events_and_timers(ngx_cycle_t *cycle)&amp;#123;    ngx_uint_t  flags;    ngx_msec_t  timer, delta;    if (ngx_timer_resolution) &amp;#123;        timer =">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux中mmap文件到内存中，该进程发生错误被挂掉后mmap映射的内存能否写回到文件中的问题">
-<meta property="og:url" content="http://yoursite.com/2013/03/23/test2/index.html">
+<meta property="og:title" content="Nginx 工作进程运行示意图">
+<meta property="og:url" content="http://yoursite.com/2016/03/23/test4/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="aaaaaa">
-<meta property="og:updated_time" content="2016-03-24T02:33:41.000Z">
+<meta property="og:description" content="(旧存档丢了, 只剩下一张图 ⊙﹏⊙)
+nginx 工作进程运行示意图: 
+voidngx_process_events_and_timers(ngx_cycle_t *cycle)&amp;#123;    ngx_uint_t  flags;    ngx_msec_t  timer, delta;    if (ngx_timer_resolution) &amp;#123;        timer =">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/ngxlua.png">
+<meta property="og:updated_time" content="2016-03-24T06:22:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux中mmap文件到内存中，该进程发生错误被挂掉后mmap映射的内存能否写回到文件中的问题">
-<meta name="twitter:description" content="aaaaaa">
+<meta name="twitter:title" content="Nginx 工作进程运行示意图">
+<meta name="twitter:description" content="(旧存档丢了, 只剩下一张图 ⊙﹏⊙)
+nginx 工作进程运行示意图: 
+voidngx_process_events_and_timers(ngx_cycle_t *cycle)&amp;#123;    ngx_uint_t  flags;    ngx_msec_t  timer, delta;    if (ngx_timer_resolution) &amp;#123;        timer =">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/ngxlua.png">
 
 
 
@@ -82,7 +90,7 @@
   };
 </script>
 
-  <title> linux中mmap文件到内存中，该进程发生错误被挂掉后mmap映射的内存能否写回到文件中的问题 | mumumuwudi的博客 </title>
+  <title> Nginx 工作进程运行示意图 | mumumuwudi的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -222,7 +230,7 @@
             
             
               
-                linux中mmap文件到内存中，该进程发生错误被挂掉后mmap映射的内存能否写回到文件中的问题
+                Nginx 工作进程运行示意图
               
             
           </h1>
@@ -234,8 +242,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2013-03-23T19:17:28-07:00" content="2013-03-23">
-              2013-03-23
+            <time itemprop="dateCreated" datetime="2016-03-23T23:05:03-07:00" content="2016-03-23">
+              2016-03-23
             </time>
           </span>
 
@@ -261,8 +269,9 @@
       
 
       
-        <a id="more"></a>
-<p>aaaaaa</p>
+        <p>(旧存档丢了, 只剩下一张图 ⊙﹏⊙)</p>
+<p>nginx 工作进程运行示意图:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/ngxlua.png" alt=""> </p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">ngx_process_events_and_timers</span><span class="params">(ngx_cycle_t *cycle)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_uint_t</span>  flags;</span><br><span class="line">    <span class="keyword">ngx_msec_t</span>  timer, delta;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ngx_timer_resolution) &#123;</span><br><span class="line">        timer = NGX_TIMER_INFINITE;</span><br><span class="line">        flags = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        timer = ngx_event_find_timer();</span><br><span class="line">        flags = NGX_UPDATE_TIME;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// accept 互斥锁相关逻辑</span></span><br><span class="line">    <span class="keyword">if</span> (ngx_use_accept_mutex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ngx_accept_disabled &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            ngx_accept_disabled--;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (ngx_trylock_accept_mutex(cycle) == NGX_ERROR) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (ngx_accept_mutex_held) &#123;</span><br><span class="line">                flags |= NGX_POST_EVENTS;</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (timer == NGX_TIMER_INFINITE</span><br><span class="line">                    || timer &gt; ngx_accept_mutex_delay)</span><br><span class="line">                &#123;</span><br><span class="line">                    timer = ngx_accept_mutex_delay;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    delta = ngx_current_msec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// epoll wait 等待socket 读写等事件发生</span></span><br><span class="line">    (<span class="keyword">void</span>) ngx_process_events(cycle, timer, flags);</span><br><span class="line"></span><br><span class="line">    delta = ngx_current_msec - delta;</span><br><span class="line"></span><br><span class="line">    ngx_log_debug1(NGX_LOG_DEBUG_EVENT, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"timer delta: %M"</span>, delta);</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 优先处理 accept 事件</span></span><br><span class="line">    ngx_event_process_posted(cycle, &amp;ngx_posted_accept_events);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ngx_accept_mutex_held) &#123;</span><br><span class="line">        ngx_shmtx_unlock(&amp;ngx_accept_mutex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理定时器超时事件</span></span><br><span class="line">        <span class="keyword">if</span> (delta) &#123;</span><br><span class="line">        ngx_event_expire_timers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 最后处理普通I/O等事件</span></span><br><span class="line">    ngx_event_process_posted(cycle, &amp;ngx_posted_events);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">ngx_worker_process_cycle</span><span class="params">(ngx_cycle_t *cycle, <span class="keyword">void</span> *data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">ngx_int_t</span> worker = (<span class="keyword">intptr_t</span>) data;</span><br><span class="line"></span><br><span class="line">    ngx_process = NGX_PROCESS_WORKER;</span><br><span class="line">    ngx_worker = worker;</span><br><span class="line"></span><br><span class="line">    ngx_worker_process_init(cycle, worker);</span><br><span class="line"></span><br><span class="line">    ngx_setproctitle(<span class="string">"worker process"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ( ;; ) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ngx_exiting) &#123;</span><br><span class="line">            ngx_event_cancel_timers();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (ngx_event_timer_rbtree.root == ngx_event_timer_rbtree.sentinel)</span><br><span class="line">            &#123;</span><br><span class="line">                ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"exiting"</span>);</span><br><span class="line"></span><br><span class="line">                ngx_worker_process_exit(cycle);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        ngx_log_debug0(NGX_LOG_DEBUG_EVENT, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"worker cycle"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 工作进程主要处理逻辑</span></span><br><span class="line">        ngx_process_events_and_timers(cycle);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 信号处理，重启退出等逻辑</span></span><br><span class="line">        <span class="keyword">if</span> (ngx_terminate) &#123;</span><br><span class="line">            ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"exiting"</span>);</span><br><span class="line"></span><br><span class="line">            ngx_worker_process_exit(cycle);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ngx_quit) &#123;</span><br><span class="line">            ngx_quit = <span class="number">0</span>;</span><br><span class="line">            ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>,</span><br><span class="line">                          <span class="string">"gracefully shutting down"</span>);</span><br><span class="line">            ngx_setproctitle(<span class="string">"worker process is shutting down"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!ngx_exiting) &#123;</span><br><span class="line">                ngx_exiting = <span class="number">1</span>;</span><br><span class="line">                ngx_close_listening_sockets(cycle);</span><br><span class="line">                ngx_close_idle_connections(cycle);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ngx_reopen) &#123;</span><br><span class="line">            ngx_reopen = <span class="number">0</span>;</span><br><span class="line">            ngx_log_error(NGX_LOG_NOTICE, cycle-&gt;<span class="built_in">log</span>, <span class="number">0</span>, <span class="string">"reopening logs"</span>);</span><br><span class="line">            ngx_reopen_files(cycle, <span class="number">-1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -280,13 +289,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/03/23/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2014/03/23/test1/" rel="prev" title="LEVELDB(SSDB)关于读操作两种CACHE的作用和配置">
-                LEVELDB(SSDB)关于读操作两种CACHE的作用和配置 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
