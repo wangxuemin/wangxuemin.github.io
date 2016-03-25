@@ -55,20 +55,17 @@
 
 
 
-<meta name="description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~ 
-在加入listen socket的sk_sleep队列 的唤醒队列里使用了 add_wait_queue_e">
+<meta name="description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Epoll 新增 EPOLLEXCLUSIVE 选项解决了新建连接的’惊群‘问题">
 <meta property="og:url" content="http://yoursite.com/2016/01/25/Epoll 新增 EPOLLEXCLUSIVE 选项解决了新建连接的’惊群‘问题/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~ 
-在加入listen socket的sk_sleep队列 的唤醒队列里使用了 add_wait_queue_e">
+<meta property="og:description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/epoll-exculsive-1.png">
-<meta property="og:updated_time" content="2016-03-24T23:21:24.000Z">
+<meta property="og:updated_time" content="2016-03-25T04:32:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Epoll 新增 EPOLLEXCLUSIVE 选项解决了新建连接的’惊群‘问题">
-<meta name="twitter:description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~ 
-在加入listen socket的sk_sleep队列 的唤醒队列里使用了 add_wait_queue_e">
+<meta name="twitter:description" content="epoll最终和accept一样解决了新建连接的惊群问题 patch地址： https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898patch比较简单， 下面摘录了一部分关键修改~~">
 <meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/epoll-exculsive-1.png">
 
 
@@ -275,7 +272,7 @@
       
 
       
-        <p>epoll最终和accept一样解决了新建连接的惊群问题 patch地址：<br> <a href="https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898" target="_blank" rel="external">https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898</a><br>patch比较简单， 下面摘录了一部分关键修改~~<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/epoll-exculsive-1.png" alt=""> </p>
+        <p>epoll最终和accept一样解决了新建连接的惊群问题 patch地址：<br> <a href="https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898" target="_blank" rel="external">https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898</a><br>patch比较简单， 下面摘录了一部分关键修改~~<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/epoll-exculsive-1.png" alt=""><br> <a id="more"></a> </p>
 <p>在加入listen socket的sk_sleep队列 的唤醒队列里使用了 add_wait_queue_exculsive()函数，  当tcp 收到 三次<br>握手最后一个 ack 报文时调用sock_def_readable时，只唤醒一个等待源， 从而避免’惊群‘.<br>调用栈如下：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//  tcp_v4_do_rcv()</span></span><br><span class="line"><span class="comment">//  --&gt;tcp_child_process()</span></span><br><span class="line"><span class="comment">//  ---&gt;sock_def_readable()</span></span><br><span class="line"><span class="comment">//  ----&gt;wake_up_interruptible_sync_poll()</span></span><br><span class="line"><span class="comment">//  -----&gt;__wake_up_sync_key()</span></span><br></pre></td></tr></table></figure></p>
 <p>相关链接:<br><a href="https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898" target="_blank" rel="external">https://github.com/torvalds/linux/commit/df0108c5da561c66c333bb46bfe3c1fc65905898</a><br><a href="https://lwn.net/Articles/667087/" target="_blank" rel="external">https://lwn.net/Articles/667087/</a><br><a href="http://netdev.vger.kernel.narkive.com/RWScCeSc/patch-net-next-epoll-add-epollexclusive-support" target="_blank" rel="external">http://netdev.vger.kernel.narkive.com/RWScCeSc/patch-net-next-epoll-add-epollexclusive-support</a><br><a href="https://lwn.net/Articles/632590/" target="_blank" rel="external">https://lwn.net/Articles/632590/</a></p>
 <p>转载请注明出处，谢谢。。</p>
