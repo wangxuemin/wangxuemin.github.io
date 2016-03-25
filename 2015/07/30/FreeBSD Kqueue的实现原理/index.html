@@ -64,7 +64,7 @@
 <meta property="og:description" content="kqueue/epoll 是两个网上出现频率比较高的关键字，epoll实现原理及源码网上已经有很多blog分析，关于select/poll/epoll、kqueque的优缺点也不再解释。kqueue实现原理的文章网上资料比较少， 基本上就JonathanLemon的一篇论文， Jonathan Lemon也是Kqueue的发明者。文章链接: 
 -Kqueue:A generic and scala">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/kqueue-1.png">
-<meta property="og:updated_time" content="2016-03-24T23:33:01.000Z">
+<meta property="og:updated_time" content="2016-03-25T03:39:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="FreeBSD Kqueue的实现原理">
 <meta name="twitter:description" content="kqueue/epoll 是两个网上出现频率比较高的关键字，epoll实现原理及源码网上已经有很多blog分析，关于select/poll/epoll、kqueque的优缺点也不再解释。kqueue实现原理的文章网上资料比较少， 基本上就JonathanLemon的一篇论文， Jonathan Lemon也是Kqueue的发明者。文章链接: 
@@ -277,7 +277,7 @@
       
         <p>kqueue/epoll 是两个网上出现频率比较高的关键字，epoll实现原理及源码网上已经有很多blog分析，关于<br>select/poll/epoll、kqueque的优缺点也不再解释。kqueue实现原理的文章网上资料比较少， 基本上就Jonathan<br>Lemon的一篇论文， Jonathan Lemon也是Kqueue的发明者。文章链接: </p>
 <p>-<a href="http://people.freebsd.org/~jlemon/papers/kqueue.pdf" target="_blank" rel="external">Kqueue:A generic and scalable event notification facility</a>-</p>
-<p>本文主要说明一下其中的kqueue的实现部分,从网络收发部分看kqueue和epoll的使用方式和实现原理都比较类似.<br>这篇文章介绍了kqueue的使用方法：使用 kqueue 在 FreeBSD 上开发高性能应用服务器 . kqueue的是主要实现逻辑<br>在kern_event.c 里面(freebsd 4.1)</p>
+<p>本文主要说明一下其中的kqueue的实现部分,从网络收发部分看kqueue和epoll的使用方式和实现原理都比较类似.<br>这篇文章介绍了kqueue的使用方法：<a href="http://www.ibm.com/developerworks/cn/aix/library/1105_huangrg_kqueue/" target="_blank" rel="external">使用 kqueue 在 FreeBSD 上开发高性能应用服务器</a> . kqueue的是主要实现逻辑<br>在kern_event.c 里面(freebsd 4.1)</p>
 <p>在kqueue实现中，比较关键的是一个knote结构体，该结构体在内核空间对应于应用层的kevent结构体.  knote<br>将事件源(被监控节点tcp/socket), 事件源是否有事件发生和knote所在的kqueue联系起来.  knote之间也有联系这个<br>后面具体分析.另一个比较关键的数据结构是kqueue自己，包含两个功能：1)包含一个有事件发生需要通知应用<br>层的knotes队列，也就是已完成事件队列. 2) 保存并跟踪应用层注册的的需要监听的事件和描述符.kqueue有三个<br>子结构体来实现上面的功能：</p>
 <pre><code>1. 一个队列，用来保存active的knotes节点
 
@@ -293,8 +293,8 @@ filter()：当事件源(TCP)有事件发生时，如收到数据会先调用该�
           是否需要通知到应用层.  filter()返回boolean类型表明事件是否需要通知应用层.
           kqueue_sacn()也会调用该函数来检测某一事件是否已满足
 </code></pre><p>跟事件源连接，事件源是否有事件发生，发生时通知哪些knotes节点, 都通过这三个函数来实现.</p>
-<p>事件源有事件发生：<br>当有事件发生时（收到一个数据包、文件被修改、一个进程退出），最终会将事件通知给应用层. 收到事件时<br>事件源会对attach到自己的knotes链表调用knote()函数.knote()扫描所有link到该事件源的knotes，检测事件是否满足<br>通知条件(filter()函数）.如果事件条件满足则将该knote放入到kqueue的active list队列里，最终会传递给应用层.<br>投递：</p>
-<p>主要将kqueue active list里的事件copy到应用层下面是调用栈示简单示意图(freebsd 4.1 ),以TCP为例:</p>
+<p>事件源有事件发生：<br>当有事件发生时（收到一个数据包、文件被修改、一个进程退出），最终会将事件通知给应用层. 收到事件时<br>事件源会对attach到自己的knotes链表调用knote()函数.knote()扫描所有link到该事件源的knotes，检测事件是否满足<br>通知条件(filter()函数）.如果事件条件满足则将该knote放入到kqueue的active list队列里，最终会传递给应用层.</p>
+<p>投递：<br>主要将kqueue active list里的事件copy到应用层下面是调用栈示简单示意图(freebsd 4.1 ),以TCP为例:</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//***************************************************************************    </span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//注册    </span></span><br><span class="line">kevent()    </span><br><span class="line">  -&gt;kqueue_register()  <span class="comment">//注册要监听的TCP的事件    </span></span><br><span class="line">    -&gt;knote_attach      <span class="comment">//分配note结点，并和相对应的socket 连接    </span></span><br><span class="line">    -&gt;fops-&gt;f_attach()==filt_sorattach()  <span class="comment">//调用TCP socketfilter里的attach函数    </span></span><br><span class="line">       -&gt;SLIST_INSERT_HEAD()   <span class="comment">// 将knotes结点挂入该socket的knotes 列表    </span></span><br><span class="line">           </span><br><span class="line">    </span><br><span class="line"><span class="comment">//检测是否有event发生    </span></span><br><span class="line">kevent()    </span><br><span class="line">  -&gt;kqueue_scan()  <span class="comment">// 检查是否有时间按发生     </span></span><br><span class="line">    -&gt;tsleep()      <span class="comment">//事件为空则sleep 等待事件通知    </span></span><br><span class="line">            </span><br><span class="line">    </span><br><span class="line"><span class="comment">//TCP 收报流程    </span></span><br><span class="line">tcp_input()    </span><br><span class="line">  -&gt;sowwakeup()    </span><br><span class="line">    -&gt;sowakeup()        </span><br><span class="line">      -&gt;knote()   <span class="comment">//遍历连接到自己的knotes结点list    </span></span><br><span class="line">        -&gt;kn_fop-&gt;f_even()  <span class="comment">//事件满足唤醒条件    </span></span><br><span class="line">        -&gt;knote_enqueue()    <span class="comment">//将knote插入kqueue的active队列    </span></span><br><span class="line">          -&gt;wakeup();   <span class="comment">//唤醒kqueue    </span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//************************************************************************</span></span><br></pre></td></tr></table></figure>
 <p>转载请注明出处，谢谢。。</p>
 

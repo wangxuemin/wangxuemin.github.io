@@ -65,7 +65,7 @@ https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/http://forum.ngin
 <meta property="og:description" content="NGINX release 1.9.1 introduces a new feature that enables use of the SO_REUSEPORT 
 https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/http://forum.nginx.org/read.php?29,252762,253401
 实现思路补">
-<meta property="og:updated_time" content="2016-03-24T17:44:07.000Z">
+<meta property="og:updated_time" content="2016-03-25T02:46:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NGINX最新版正式增加了对reuseport (SO_REUSEPORT) 的支持,正式补丁代码分析">
 <meta name="twitter:description" content="NGINX release 1.9.1 introduces a new feature that enables use of the SO_REUSEPORT 
@@ -279,7 +279,7 @@ https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/http://forum.ngin
         <p>NGINX release 1.9.1 introduces a new feature that enables use of the SO_REUSEPORT </p>
 <p><a href="https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/" target="_blank" rel="external">https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/</a><br><a href="http://forum.nginx.org/read.php?29,252762,253401" target="_blank" rel="external">http://forum.nginx.org/read.php?29,252762,253401</a></p>
 <p>实现思路补丁里已经说明，跟很早之的一个简单方案的差别比较大<br> <a id="more"></a><br>Here, I am proposing a simpler way to enable the SO_REUSEPORT support. It is just to create<br>and configure certain number of listen sockets in the master process with SO_REUSEPORT enabled.<br>All the children processes can inherit. In this case, we do not need to worry about ensuring 1 available<br>listen socket at the run time. The number of the listen sockets to be created is calculated based on the<br>number of active CPU threads. With big system that has more CPU threads (where we have the scalability<br>issue), there are more duplicated listen sockets created to improve the throughput and scalability. With system<br>that has only 8 or less CPU threads, there will be only 1 listen socket. This makes sure duplicated listen sockets<br>only being created when necessary. </p>
-<p>在这里我们使用一个简单的方法来支持SO_REUSEPORT, 当enable SO_REUSEPORT时在主进程中去配置<br>和创建一定数量的listen socket， 然后让子进程去继承。 在这种情况下我们不用担心至少有一个listen socket存活<br>(配置升级).  创建监听socket  的数量是通过CPU的数量决定的.  CPU数目多则多创建socket. CPU数目少于8核<br>则只会创建一个listen socket.<br>关于创建listen socket 的数目从最终的diff看 listen socket数量跟工作进程的数目一致</p>
+<p>在这里我们使用一个简单的方法来支持SO_REUSEPORT, 当enable SO_REUSEPORT时, 在主进程中去配置<br>和创建一定数量的listen socket， 然后让子进程去继承。 在这种情况下我们不用担心至少有一个listen socket存活<br>(配置升级).  创建监听socket  的数量是通过CPU的数量决定的.  CPU数目多则多创建socket. CPU数目少于8核<br>则只会创建一个listen socket.<br>关于创建listen socket 的数目从最终的diff看 listen socket数量跟工作进程的数目一致</p>
 <p>最终修改代码diff：<br><a href="http://trac.nginx.org/nginx/changeset/4f6efabcb09b693ac5461f2b1d05a526f9710137/nginx" target="_blank" rel="external">http://trac.nginx.org/nginx/changeset/4f6efabcb09b693ac5461f2b1d05a526f9710137/nginx</a></p>
 <pre><code class="cpp"><span class="comment">//****************************************************************</span>
 <span class="comment">//复制listen socket的配置， 后续的创建流程会根据listen socket 配置进行创建</span>
@@ -349,6 +349,7 @@ https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/http://forum.ngin
      }
 }
 </code></pre>
+<p>转载请注明出处 谢谢~~</p>
 
       
     </div>

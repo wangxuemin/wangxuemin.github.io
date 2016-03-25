@@ -62,7 +62,7 @@
 <meta property="og:site_name" content="mumumuwudi的博客">
 <meta property="og:description" content="This patch implements so_reuseport (SO_REUSEPORT socket option) forTCP and UDP. For TCP,so_reuseportallows multiple listener socketsto be bound to the same port.  In thecase of UDP, so_reuseport allow">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/google-reuseport-1.png">
-<meta property="og:updated_time" content="2016-03-24T18:09:41.000Z">
+<meta property="og:updated_time" content="2016-03-25T03:00:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="google linux kernel tcp reuseport patch">
 <meta name="twitter:description" content="This patch implements so_reuseport (SO_REUSEPORT socket option) forTCP and UDP. For TCP,so_reuseportallows multiple listener socketsto be bound to the same port.  In thecase of UDP, so_reuseport allow">
@@ -289,6 +289,7 @@
 <p>每个连接被唤醒的概率是不公平的，我们见过最多的线程和最少的之间接收的连接数目相差3倍,使用reuseport后这些<br>线程将会变得非常均匀</p>
 <p>补丁diff文件：<br><a href="https://gist.github.com/fcicq/3993833" target="_blank" rel="external">https://gist.github.com/fcicq/3993833</a><br><a href="http://patchwork.ozlabs.org/patch/50430/" target="_blank" rel="external">http://patchwork.ozlabs.org/patch/50430/</a></p>
 <p>上面是补丁的介绍，除了扩展一些数据结构外主要更改了:<br>1）bind逻辑   如果设置了so_reuseport 选项，放开对同一端口绑定的限制,<br>2） 另外就是TCP/UDP的收报流程，如TCP的SYN建连报文来时，需要在这些绑定的相同的端口的 listen socket 均衡<br>的选择一个合适的，下面代码增加了查找相同端口号的listen socket 的逻辑:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/google-reuseport-1.png" alt=""> </p>
+<p>转载请注明出处 谢谢~~</p>
 
       
     </div>
