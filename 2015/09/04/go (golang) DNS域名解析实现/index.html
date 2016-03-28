@@ -55,16 +55,16 @@
 
 
 
-<meta name="description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Look">
+<meta name="description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/ 域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Loo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="go (golang) DNS域名解析实现">
 <meta property="og:url" content="http://yoursite.com/2015/09/04/go (golang) DNS域名解析实现/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Look">
-<meta property="og:updated_time" content="2016-03-24T23:20:17.000Z">
+<meta property="og:description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/ 域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Loo">
+<meta property="og:updated_time" content="2016-03-28T23:37:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="go (golang) DNS域名解析实现">
-<meta name="twitter:description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Look">
+<meta name="twitter:description" content="之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr实现方式。下面一段描述翻译自go语言的官方文档 https://golang.org/pkg/net/ 域名解析：域名解析函数，Dial函数会间接调用到，而LokupHost和Loo">
 
 
 
@@ -270,7 +270,7 @@
       
 
       
-        <p>之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即<br>DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr<br>实现方式。下面一段描述翻译自go语言的官方文档 <a href="https://golang.org/pkg/net/域名解析：" target="_blank" rel="external">https://golang.org/pkg/net/域名解析：</a><br>域名解析函数，Dial函数会间接调用到，而LokupHost和LookupAddr则会直接调用域名解析函数，不同<br>的操作系统实现不同,  在Unix系统中有两种方法进行域名解析：</p>
+        <p>之前使用过GO语言写了一个实时图片下载程序，主要考虑到GO语言的DNS解析对协程支持友好， 即<br>DNS解析时不会阻塞执行线程，只会阻塞当前协程，顺便研究了一下GO的net.LookupHost/ResolveIPAddr<br>实现方式。下面一段描述翻译自go语言的官方文档 <a href="https://golang.org/pkg/net/" target="_blank" rel="external">https://golang.org/pkg/net/</a> 域名解析：<br>域名解析函数，Dial函数会间接调用到，而LokupHost和LookupAddr则会直接调用域名解析函数，不同<br>的操作系统实现不同,  在Unix系统中有两种方法进行域名解析：</p>
 <p> 1）纯GO语言实现的域名解析,从/etc/resolv.conf中取出本地dns server地址列表， 发送DNS请求(UDP<br>    报文)并获得结果<br>2)  使用cgo方式， 最终会调用到c标准库的getaddrinfo或getnameinfo函数(不建议使用对GO协程不友好)</p>
 <p>关于 cgo dns 解析的坑 参照以下链接<br><a href="https://jira.mongodb.org/browse/MGO-41" target="_blank" rel="external">https://jira.mongodb.org/browse/MGO-41</a><br><a href="https://github.com/golang/go/issues/8602#issuecomment-66098142" target="_blank" rel="external">https://github.com/golang/go/issues/8602#issuecomment-66098142</a></p>
 <p>GO语言默认使用纯GO的域名解析，因为这样一个阻塞的DNS请求只会消耗一个协程， 使 用cgo的方式<br>则会阻塞一个系统线程, 只有某些特定条件下才会使用系统提供的cgo方式, 例如: 1) 在OS X系统中不允许程序<br>直接发送DNS请求;  2) LOCALDOMAINH环境变量存在，即使为空;  3) ES_OPTIONS或HOSTALIASES或ASR<br>_CONFIG环境变量非空; 4)/etc/resolv.conf或/etc/nsswitch.conf指定的使用方式GO解析器没有实现;  5)<br>当要解析的域名以.local结束， 或者是一个mDNS域名</p>

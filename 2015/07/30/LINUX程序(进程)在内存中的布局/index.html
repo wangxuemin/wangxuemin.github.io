@@ -55,28 +55,25 @@
 
 
 
-<meta name="description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图
-很漂亮,建议读者亲自读一遍英文.
-&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32">
+<meta name="description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图很漂亮,建议读者亲自读一遍英文.
+&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32位">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LINUX程序(进程)在内存中的布局">
 <meta property="og:url" content="http://yoursite.com/2015/07/30/LINUX程序(进程)在内存中的布局/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图
-很漂亮,建议读者亲自读一遍英文.
-&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32">
+<meta property="og:description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图很漂亮,建议读者亲自读一遍英文.
+&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32位">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-1.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-2.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-3.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-4.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-5.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-6.png">
-<meta property="og:updated_time" content="2016-03-25T03:31:36.000Z">
+<meta property="og:updated_time" content="2016-03-28T23:37:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LINUX程序(进程)在内存中的布局">
-<meta name="twitter:description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图
-很漂亮,建议读者亲自读一遍英文.
-&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32">
+<meta name="twitter:description" content="翻译自: http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/ 感谢作者， 尤其一些图很漂亮,建议读者亲自读一遍英文.
+&amp;emsp; &amp;emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32位">
 <meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-1.png">
 
 
@@ -283,8 +280,7 @@
       
 
       
-        <p>翻译自: <a href="http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/" target="_blank" rel="external">http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/</a> 感谢作者， 尤其一些图</p>
-<p>很漂亮,建议读者亲自读一遍英文.</p>
+        <p>翻译自: <a href="http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/" target="_blank" rel="external">http://duartes.org/gustavo/blog/post/anatomy-of-a-program-in-memory/</a> 感谢作者， 尤其一些图<br>很漂亮,建议读者亲自读一遍英文.</p>
 <p>&emsp; &emsp; 内存管理是操作系统的核心; 是编程和系统管理的关键部分，在接下来的几篇文章中会从实际应用和内部角<br>度对内存管理模块进行分析. 内存管理的相关概念都是通用的，我们依照32位的linux和windowx86架构来分析. 这篇<br>文章主要介绍了进程的内存布局.<br>&emsp; &emsp; 在多任务操作系统中每一个进程都有自己的内存空间，这个内存空间是虚拟内存空间，在32位机器中，每一<br>个进程有都4G的虚拟内存空间, 这些虚拟内存地址通过页表映射到真实的物理地址空间中, 这个映射关系是由内核<br>来管理的.每一个进程有自己的页表，但是一旦虚拟内存被启用，所有程序包括内核本身都会使用虚拟内存(在X86<br>CPU中大概只有一个CR3的寄存机存放的是物理地址，指向页表)，所以虚拟地址空间的一部分需要划分给内核<br>使用：<img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-1.png" alt=""><br>&emsp; &emsp; 这并不意味着内核使用了很多物理内存， 内核只是预留了一段虚拟内存空间，当内核需要时可以映射为物理<br>内存, 内核的空间的页表有特殊flag(ring 2 or lower)，当用户空间的代码访问内核页表时会触发page fault<br>在linux中, 内核空间在所有程序中指向的物理地址是一样的. 内核代码总是可寻址的.随时接受中断或系统调用. 与<br>此相反用户的地址空间则会随着进程的切换不断变化, </p>
 <p><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/linux_process_mem-2.png" alt=""> </p>
 <p>&emsp; &emsp; 蓝色区域表示已映射物理内存的虚拟地址空间, 而白色表示还未映射.  在上面的例子中Firefox已经使用了大量<br>的虚拟地址空间. 不同的地址空间段对应程序不同的内存段包括堆、栈等等. 这些内存段落只是简单表示了一段空间而<br>已，下图是一个标准的进程内存空间的布局:</p>
