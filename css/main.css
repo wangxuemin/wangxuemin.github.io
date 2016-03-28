@@ -188,7 +188,7 @@ body {
   font-family: Lato, "PingFang SC", "Microsoft YaHei", sans-serif;
   font-size: 14px;
   line-height: 2;
-  color: #555;
+  color: #333;
   background: #fff;
 }
 @media (max-width: 767px) {
@@ -277,7 +277,7 @@ p {
   margin: 0 0 25px 0;
 }
 a {
-  color: #555;
+  color: #333;
   text-decoration: none;
   border-bottom: 1px solid #999;
   word-wrap: break-word;
@@ -743,7 +743,7 @@ pre .javascript .function {
   display: block;
   width: 22px;
   height: 2px;
-  background: #555;
+  background: #333;
   border-radius: 1px;
 }
 .btn-bar+.btn-bar {
@@ -1182,7 +1182,7 @@ pre .javascript .function {
   opacity: 0.6;
 }
 .posts-collapse .post-title a {
-  color: #666;
+  color: #333;
   border-bottom: none;
 }
 .page-home .post-type-quote .post-header,
@@ -1277,7 +1277,7 @@ pre .javascript .function {
   margin-top: 50px;
 }
 .post-more-link .btn {
-  color: #555;
+  color: #333;
   font-size: 14px;
   background: transparent;
   border-radius: 0;
@@ -1309,7 +1309,7 @@ pre .javascript .function {
   display: inline-block;
   line-height: 25px;
   font-size: 14px;
-  color: #555;
+  color: #333;
   border-bottom: none;
 }
 .post-nav-item a:hover {
@@ -1513,7 +1513,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #4b9d3b;
+  background: #ff4bff;
 }
 .links-of-blogroll {
   font-size: 13px;
