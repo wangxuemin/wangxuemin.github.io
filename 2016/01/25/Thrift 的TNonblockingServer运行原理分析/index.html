@@ -55,14 +55,12 @@
 
 
 
-<meta name="description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下： 
-–1– server 创建 多个 iothread 和  工作线程池 workpool  thread (给iothread发消息的方式主要通过管道的方式进行 )–2– 传递listenfd 给 iothread 的 numbe">
+<meta name="description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Thrift 的TNonblockingServer运行原理分析">
 <meta property="og:url" content="http://yoursite.com/2016/01/25/Thrift 的TNonblockingServer运行原理分析/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下： 
-–1– server 创建 多个 iothread 和  工作线程池 workpool  thread (给iothread发消息的方式主要通过管道的方式进行 )–2– 传递listenfd 给 iothread 的 numbe">
+<meta property="og:description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下：">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-2.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-3.png">
@@ -70,11 +68,10 @@
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-5.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-6.png">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-7.png">
-<meta property="og:updated_time" content="2016-03-25T04:09:01.000Z">
+<meta property="og:updated_time" content="2016-03-29T02:40:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thrift 的TNonblockingServer运行原理分析">
-<meta name="twitter:description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下： 
-–1– server 创建 多个 iothread 和  工作线程池 workpool  thread (给iothread发消息的方式主要通过管道的方式进行 )–2– 传递listenfd 给 iothread 的 numbe">
+<meta name="twitter:description" content="整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，TNonblockingServer的工作流程如下：">
 <meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift.png">
 
 
@@ -281,7 +278,7 @@
       
 
       
-        <p>整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，<br>TNonblockingServer的工作流程如下：<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift.png" alt=""> </p>
+        <p>整理下thrift TNonblockingServer的工作流程，简单记录下， 因为处理过程比较复杂不具体分析了，<br>TNonblockingServer的工作流程如下：<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift.png" alt=""><br> <a id="more"></a> </p>
 <p>–1– server 创建 多个 iothread 和  工作线程池 workpool  thread (给iothread发消息的方式主要通过管道的方式进行 )<br>–2– 传递listenfd 给 iothread 的 number 为0的线程，该线程监听listen socket的accept事件<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-2.png" alt=""> </p>
 <p>–3– 当0号iothread 监听到accept事件时， 创建connection 并交给相应的iothread处理数据收发(通过管道方式通知相应的iothread)<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-3.png" alt=""><br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-4.png" alt=""> </p>
 <p>–4– iothread收到新的connection 根据 connection的状态 进行数据收发等处理 ，该逻辑由conection的transition()<br>函数完成, 第一部肯定是请求报文的read操作<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/thrift-5.png" alt=""> </p>
