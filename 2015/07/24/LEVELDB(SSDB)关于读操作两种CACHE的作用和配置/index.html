@@ -70,7 +70,7 @@ table_cache用来缓存的是sstable的索引数据，也可以理解为mysql中
 
 block_cache用来缓存的block数">
 <meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/leveldb-cache-1.png">
-<meta property="og:updated_time" content="2016-03-25T00:36:28.000Z">
+<meta property="og:updated_time" content="2016-03-29T02:50:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LEVELDB(SSDB)关于读操作两种CACHE的作用和配置">
 <meta name="twitter:description" content="SSDB及LEVELDB的用来优化查找Cache分为两种，分别是table_cache和block_cache。
@@ -291,7 +291,6 @@ block_cache用来缓存的block数">
 block_cache用来缓存的block数据，即文件内容的缓存;
 </code></pre><p>table_cache 在ssdb中通过leveldb.max_open_files 来设置，最大1000个table及1000个sstable文件;<br>block_cache 通过leveldb.block_size 设置；<br>关于两种cache在查找流程中得位置如下图所示:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/leveldb-cache-1.png" alt=""> </p>
 <p>转载请注明出处 谢谢~~</p>
-<p>&amp;emsp</p>
 
       
     </div>
