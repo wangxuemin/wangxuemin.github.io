@@ -55,19 +55,19 @@
 
 
 
-<meta name="description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
-void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
+<meta name="description" content="利用vmtouch管理文件的page cache,   vmtouch主页和使用说明：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t">
 <meta property="og:type" content="article">
 <meta property="og:title" content="利用vmtouch管理文件的page cache">
 <meta property="og:url" content="http://yoursite.com/2016/02/15/利用vmtouch管理文件的page cache/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
-void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
-<meta property="og:updated_time" content="2017-05-22T10:55:28.000Z">
+<meta property="og:description" content="利用vmtouch管理文件的page cache,   vmtouch主页和使用说明：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t">
+<meta property="og:updated_time" content="2017-05-22T11:06:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用vmtouch管理文件的page cache">
-<meta name="twitter:description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
-void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
+<meta name="twitter:description" content="利用vmtouch管理文件的page cache,   vmtouch主页和使用说明：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t">
 
 
 
@@ -273,7 +273,7 @@ void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(
       
 
       
-        <p>利用vmtouch管理文件的page cache,   vmtouch主页：<a href="https://hoytech.com/vmtouch/" target="_blank" rel="external">https://hoytech.com/vmtouch/</a><br>源码也比较简单 <a href="https://github.com/hoytech/vmtouch/blob/master/vmtouch.c" target="_blank" rel="external">https://github.com/hoytech/vmtouch/blob/master/vmtouch.c</a></p>
+        <p>利用vmtouch管理文件的page cache,   vmtouch主页和使用说明：<a href="https://hoytech.com/vmtouch/" target="_blank" rel="external">https://hoytech.com/vmtouch/</a><br>源码也比较简单 <a href="https://github.com/hoytech/vmtouch/blob/master/vmtouch.c" target="_blank" rel="external">https://github.com/hoytech/vmtouch/blob/master/vmtouch.c</a></p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">usage</span><span class="params">()</span> </span>&#123;   <span class="comment">//使用说明</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">  ....</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -t touch pages into memory\n"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -e evict pages from memory\n"</span>);</span><br><span class="line">  ....</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -v verbose\n"</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>vmtouch的功能主要分三部分:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> 查看一个文件被缓存了多少</span><br><span class="line"><span class="number">2.</span> 把文件从磁盘缓存到内存中</span><br><span class="line"><span class="number">3.</span> 把内存中的缓存数据驱逐到硬盘，释放page cache</span><br></pre></td></tr></table></figure></p>
 <p>具体实现：<br>–1–查看一个文件被缓存了多少即:文件的哪些部分在page cache中，是通过mincore系统调用实现的:</p>
