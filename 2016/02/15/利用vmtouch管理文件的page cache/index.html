@@ -1,0 +1,683 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="liunx,文件,page cache," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用vmtouch管理文件的page cache">
+<meta property="og:url" content="http://yoursite.com/2016/02/15/利用vmtouch管理文件的page cache/index.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
+<meta property="og:updated_time" content="2017-05-22T10:48:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="利用vmtouch管理文件的page cache">
+<meta name="twitter:description" content="利用vmtouch管理文件的page cache,   vmtouch主页：https://hoytech.com/vmtouch/源码也比较简单 https://github.com/hoytech/vmtouch/blob/master/vmtouch.c
+void usage() &amp;#123;   //使用说明  printf(&quot;\n&quot;);  ....  printf(&quot;  -t touch">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 利用vmtouch管理文件的page cache | mumumuwudi的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                利用vmtouch管理文件的page cache
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-15T07:59:34-08:00" content="2016-02-15">
+              2016-02-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>利用vmtouch管理文件的page cache,   vmtouch主页：<a href="https://hoytech.com/vmtouch/" target="_blank" rel="external">https://hoytech.com/vmtouch/</a><br>源码也比较简单 <a href="https://github.com/hoytech/vmtouch/blob/master/vmtouch.c" target="_blank" rel="external">https://github.com/hoytech/vmtouch/blob/master/vmtouch.c</a></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">usage</span><span class="params">()</span> </span>&#123;   <span class="comment">//使用说明</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">  ....</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -t touch pages into memory\n"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -e evict pages from memory\n"</span>);</span><br><span class="line">  ....</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"  -v verbose\n"</span>);</span><br><span class="line">  <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>vmtouch的功能主要分三部分:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> 查看一个文件被缓存了多少</span><br><span class="line"><span class="number">2.</span> 把文件从磁盘缓存到内存中</span><br><span class="line"><span class="number">3.</span> 把内存中的缓存数据驱逐到硬盘，释放page cache</span><br></pre></td></tr></table></figure></p>
+<p>具体实现：<br>–1–查看一个文件被缓存了多少是通过mincore系统调用实现的:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (mincore(mem, len_of_range, (<span class="keyword">void</span>*)mincore_array)) fatal(<span class="string">"mincore %s (%s)"</span>, path, strerror(errno));</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;pages_in_range; i++) &#123;</span><br><span class="line">  <span class="keyword">if</span> (is_mincore_page_resident(mincore_array[i])) &#123;</span><br><span class="line">    total_pages_in_core++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mincore在内核中的实现代码也比较简单: <a href="https://github.com/torvalds/linux/blob/v2.6.12-rc3/mm/mincore.c" target="_blank" rel="external">https://github.com/torvalds/linux/blob/v2.6.12-rc3/mm/mincore.c</a></p>
+<p>–2–把文件从磁盘缓存到内存中:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (o_touch) &#123;</span><br><span class="line">  <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;pages_in_range; i++) &#123;</span><br><span class="line">    junk_counter += ((<span class="keyword">char</span>*)mem)[i*pagesize];   <span class="comment">//mmap映射文件后以page size为单位，读取每个page的第一个字节，</span></span><br><span class="line">                                                <span class="comment">//从而触发内核把该page从硬盘读取到内存中 </span></span><br><span class="line">                                                <span class="comment">// </span></span><br><span class="line">    mincore_array[i] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>–3–把内存中的缓存数据驱逐到硬盘，释放page cache：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">  <span class="keyword">if</span> (o_evict) &#123;</span><br><span class="line">    <span class="keyword">if</span> (o_verbose) <span class="built_in">printf</span>(<span class="string">"Evicting %s\n"</span>, path);</span><br><span class="line"></span><br><span class="line"><span class="comment">//#if defined(__linux__) || defined(__hpux)</span></span><br><span class="line">    <span class="keyword">if</span> (posix_fadvise(fd, offset, len_of_range, POSIX_FADV_DONTNEED))</span><br><span class="line">      warning(<span class="string">"unable to posix_fadvise file %s (%s)"</span>, path, strerror(errno));</span><br><span class="line"><span class="comment">//#elif defined(__FreeBSD__) || defined(__sun__) || defined(__APPLE__)</span></span><br><span class="line"><span class="comment">//    if (msync(mem, len_of_range, MS_INVALIDATE))</span></span><br><span class="line"><span class="comment">//      warning("unable to msync invalidate file %s (%s)", path, strerror(errno));</span></span><br><span class="line"><span class="comment">//#else</span></span><br><span class="line"><span class="comment">//    fatal("cache eviction not (yet?) supported on this platform");</span></span><br><span class="line"><span class="comment">//#endif</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在linux中是通过fadvise系统调用实现的最终调用invalidate_mapping_pages释放page.<br>fadvise在内核中的实现同样比较简单： <a href="https://github.com/torvalds/linux/blob/v2.6.12-rc3/mm/fadvise.c" target="_blank" rel="external">https://github.com/torvalds/linux/blob/v2.6.12-rc3/mm/fadvise.c</a></p>
+<p>转载请注明出处，谢谢。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/liunx/" rel="tag">#liunx</a>
+          
+            <a href="/tags/文件/" rel="tag">#文件</a>
+          
+            <a href="/tags/page-cache/" rel="tag">#page cache</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/01/26/nginx_lua 扩展让 nginx 拥有可编程能力/" rel="next" title="nginx_lua 扩展让 nginx 拥有可编程能力">
+                <i class="fa fa-chevron-left"></i> nginx_lua 扩展让 nginx 拥有可编程能力
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/16/leveldb的seek_compaction/" rel="prev" title="leveldb的seek_compaction">
+                leveldb的seek_compaction <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
