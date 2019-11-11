@@ -214,7 +214,7 @@
             
               
                 
-                <a class="post-title-link" href="/2016/02/16/leveldb的seek_compaction/" itemprop="url">
+                <a class="post-title-link" href="/2016/10/16/leveldb的seek_compaction/" itemprop="url">
                   leveldb的seek_compaction
                 </a>
               
@@ -228,8 +228,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-16T07:59:34+08:00" content="2016-02-16">
-              2016-02-16
+            <time itemprop="dateCreated" datetime="2016-10-16T07:59:34+08:00" content="2016-10-16">
+              2016-10-16
             </time>
           </span>
 
@@ -242,8 +242,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/leveldb/" itemprop="url" rel="index">
+                    <span itemprop="name">leveldb</span>
                   </a>
                 </span>
 
@@ -281,7 +281,121 @@
           ...
 
           <div class="post-more-link text-center">
-            <a class="btn" href="/2016/02/16/leveldb的seek_compaction/#more" rel="contents">
+            <a class="btn" href="/2016/10/16/leveldb的seek_compaction/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/06/09/leveldb的block cache 大小对性能的影响/" itemprop="url">
+                  leveldb的block cache 大小对性能的影响.md
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-06-09T07:59:34+08:00" content="2016-06-09">
+              2016-06-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/leveldb/" itemprop="url" rel="index">
+                    <span itemprop="name">leveldb</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）
+在非DirectIO下，block cache作为文件数据的cache层，下层还有os 
+          ...
+
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/06/09/leveldb的block cache 大小对性能的影响/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1203,120 +1317,6 @@ void usage() &
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/08/26/线程间使用条件变量同步正确方式/" itemprop="url">
-                  线程间使用条件变量同步正确方式
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-08-26T08:59:34+08:00" content="2015-08-26">
-              2015-08-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          线程间同步标准的使用方式如下：
-thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthread_cond_wait(&amp;cond, &amp;mutex);    func_1();/* do
-          ...
-
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/08/26/线程间使用条件变量同步正确方式/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1362,7 +1362,7 @@ thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthre
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
