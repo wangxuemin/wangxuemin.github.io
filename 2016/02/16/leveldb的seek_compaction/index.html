@@ -39,7 +39,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="leveldb,liunx," />
+  <meta name="keywords" content="leveldb," />
 
 
 
@@ -55,16 +55,22 @@
 
 
 
-<meta name="description" content="转载请注明出处，谢谢。。">
+<meta name="description" content="Seek Compaction：
+如果在key在某个文件的key range的范围内，但是总是找不到，这时需要去高一级的level查找。显然该文件和高一级的文件key的范围重叠很很严重，会导致读效率的下降。因此，需要对该文件发起一次major compaction，减少该level 和level ＋ 1的key的重叠。某一文件允许seek miss的的最大值为：
+f-&amp;gt;allowed_see">
 <meta property="og:type" content="article">
 <meta property="og:title" content="leveldb的seek_compaction">
 <meta property="og:url" content="http://yoursite.com/2016/02/16/leveldb的seek_compaction/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="转载请注明出处，谢谢。。">
-<meta property="og:updated_time" content="2017-05-22T10:47:22.000Z">
+<meta property="og:description" content="Seek Compaction：
+如果在key在某个文件的key range的范围内，但是总是找不到，这时需要去高一级的level查找。显然该文件和高一级的文件key的范围重叠很很严重，会导致读效率的下降。因此，需要对该文件发起一次major compaction，减少该level 和level ＋ 1的key的重叠。某一文件允许seek miss的的最大值为：
+f-&amp;gt;allowed_see">
+<meta property="og:updated_time" content="2019-11-11T03:56:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="leveldb的seek_compaction">
-<meta name="twitter:description" content="转载请注明出处，谢谢。。">
+<meta name="twitter:description" content="Seek Compaction：
+如果在key在某个文件的key range的范围内，但是总是找不到，这时需要去高一级的level查找。显然该文件和高一级的文件key的范围重叠很很严重，会导致读效率的下降。因此，需要对该文件发起一次major compaction，减少该level 和level ＋ 1的key的重叠。某一文件允许seek miss的的最大值为：
+f-&amp;gt;allowed_see">
 
 
 
@@ -224,7 +230,7 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-16T07:59:34-08:00" content="2016-02-16">
+            <time itemprop="dateCreated" datetime="2016-02-16T07:59:34+08:00" content="2016-02-16">
               2016-02-16
             </time>
           </span>
@@ -270,7 +276,12 @@
       
 
       
-        <p>转载请注明出处，谢谢。。</p>
+        <p>Seek Compaction：</p>
+<p>如果在key在某个文件的key range的范围内，但是总是找不到，这时需要去高一级的level查找。显然该文件和高一级的文件key的范围重叠很很严重，会导致读效率的下降。因此，需要对该文件发起一次major compaction，减少该level 和level ＋ 1的key的重叠。<br>某一文件允许seek miss的的最大值为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">f-&gt;allowed_seeks = (f-&gt;file_size / <span class="number">16384</span>)    <span class="comment">//  文件长度／16K</span></span><br></pre></td></tr></table></figure>
+<p>seek compaction 功能在rocksdb给删除掉了.原因是RocksDB先是改进了一下seek compaction条件<br><a href="https://github.com/facebook/rocksdb/commit/c1bb32e1ba9da94d9e40af692f60c2c0420685cd" target="_blank" rel="external">https://github.com/facebook/rocksdb/commit/c1bb32e1ba9da94d9e40af692f60c2c0420685cd</a><br>在最初的版本 allowed_seeks ++的条件非常宽松， 只要Get()在两个文件以上进行过查询都会增加allowed_seeks<br>的值，这是不合理的会增加不必要的compaction，因为有可能Get()操作只是在block cache中查询了一下，<br>或者 bloom filter 直接返回没有该值了，并没有真正的文件seek.  RocksDB限制了allowed_seeks ++条件<br>(只有 从文件中read block操作了才会触发).</p>
+<p>后续的版本发现改进后seek compaction触发的情况比较少见，seek compaction增加了代码的复杂度而且有时候<br>会减慢读取速度，索性rocksdb将该功能给删除了, 以后可能针对某一文件seek miss过多在 compaction策略中<br>统一处理，</p>
+<p>转载请注明出处，谢谢。。</p>
 
       
     </div>
@@ -286,8 +297,6 @@
         <div class="post-tags">
           
             <a href="/tags/leveldb/" rel="tag">#leveldb</a>
-          
-            <a href="/tags/liunx/" rel="tag">#liunx</a>
           
         </div>
       
@@ -417,7 +426,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
