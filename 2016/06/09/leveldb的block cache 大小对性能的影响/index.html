@@ -55,19 +55,16 @@
 
 
 
-<meta name="description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）
-在非DirectIO下，block cache作为文件数据的cache层，下层还有os 的page cache 缓存了硬盘中的文件, 所以block cache大小对系统性能的影响不大.">
+<meta name="description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
 <meta property="og:type" content="article">
 <meta property="og:title" content="leveldb的block cache 大小对性能的影响">
 <meta property="og:url" content="http://yoursite.com/2016/06/09/leveldb的block cache 大小对性能的影响/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）
-在非DirectIO下，block cache作为文件数据的cache层，下层还有os 的page cache 缓存了硬盘中的文件, 所以block cache大小对系统性能的影响不大.">
-<meta property="og:updated_time" content="2019-11-11T06:06:51.000Z">
+<meta property="og:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
+<meta property="og:updated_time" content="2019-11-11T06:20:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="leveldb的block cache 大小对性能的影响">
-<meta name="twitter:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）
-在非DirectIO下，block cache作为文件数据的cache层，下层还有os 的page cache 缓存了硬盘中的文件, 所以block cache大小对系统性能的影响不大.">
+<meta name="twitter:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
 
 
 
@@ -273,7 +270,7 @@
       
 
       
-        <p>leveldb使用的缓存：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   indexes and  bloom filters(table索引信息缓存)</span></span><br><span class="line"><span class="comment">//   block cache (解压后的数据)</span></span><br><span class="line"><span class="comment">//   page cache （压缩的数据）</span></span><br></pre></td></tr></table></figure></p>
+        <p>leveldb使用的缓存：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   indexes and  bloom filters(table索引信息缓存)</span></span><br><span class="line"><span class="comment">//   block cache (解压后的数据)</span></span><br><span class="line"><span class="comment">//   page cache （压缩的数据）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//   indexes and  bloom filters    block cache </span></span><br><span class="line"><span class="comment">//         |           |            |</span></span><br><span class="line"><span class="comment">//         \           |           /                    </span></span><br><span class="line"><span class="comment">//                </span></span><br><span class="line"><span class="comment">//                  page cache </span></span><br><span class="line"><span class="comment">//                     |</span></span><br><span class="line"><span class="comment">//                     |</span></span><br><span class="line"><span class="comment">//                    disk</span></span><br></pre></td></tr></table></figure></p>
 <p>在非DirectIO下，block cache作为文件数据的cache层，下层还有os 的page cache 缓存了<br>硬盘中的文件, 所以block cache大小对系统性能的影响不大. block cache 因为是解压<br>后的数据，所以可以降低一下cpu的解压时间. 过大的 block cache 以为会导致page cache<br>数据减少,因为block cache 和 page cache 缓存的部分数据重复导致整体数据缓存量减少<br>hit rate 还有可能下降，通常来说leveldb 依赖 os的 page cache来减少文件I/O。</p>
 <p>rocksdb统计信息比较丰富,通过以上参数信息可以知道block cache 和 page cache的命中情况:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   block_cache_hit_count </span></span><br><span class="line"><span class="comment">//   block_read_count</span></span><br><span class="line"><span class="comment">//   block_read_byte</span></span><br></pre></td></tr></table></figure></p>
 <p>在DirectIO下，文件缓存全部依赖 block cache, 所以block cache越大越好<br>通常设置为系统内存的60%-80%</p>
