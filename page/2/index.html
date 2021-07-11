@@ -214,6 +214,118 @@
             
               
                 
+                <a class="post-title-link" href="/2015/08/27/ ub 网络框架的几种线程模型/" itemprop="url">
+                  ub 网络框架的几种线程模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-08-27T00:17:37+08:00" content="2015-08-27">
+              2015-08-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>ub是公司不错的网络框架, 使用C语言开发，清晰易懂，不像sofa-rpc使用c++ 开发，语言层面的技巧较多.<br>个人还是喜欢ub的简单. 本文通过ub框架介绍一下server端开发的常见的几种线程模型.</p>
+<p>ub包含5种线程模型，我们挑选了三个比较典型和简单的来讲解一下<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">xpool   \\ 最简单同步模型</span><br><span class="line"></span><br><span class="line">cpool    \\ 生产者消费者模型</span><br><span class="line"></span><br><span class="line">appool  \\ 异步模型</span><br></pre></td></tr></table></figure></p>
+<p> xpool最简单的线程模型:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/ub_1.png" alt=""><br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/08/27/ ub 网络框架的几种线程模型/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/08/26/线程间使用条件变量同步正确方式/" itemprop="url">
                   线程间使用条件变量同步正确方式
                 </a>
@@ -1209,124 +1321,11 @@ thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthre
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/07/29/ python基于协程的网络库gevent、eventlet/" itemprop="url">
-                  python基于协程的网络库gevent、eventlet
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-07-29T00:17:37+08:00" content="2015-07-29">
-              2015-07-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          python网络库也有了基于协程的实现，比较著名的是 gevent、eventlet 它两之间的关系可以参照Comparing gevent to eventlet， 本文主要简单介绍一下eventlet一个例子客户端：import eventletfrom eventlet.green impor
-          ...
-
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/07/29/ python基于协程的网络库gevent、eventlet/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1367,7 +1366,7 @@ thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthre
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1384,7 +1383,7 @@ thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthre
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-count">42</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1423,7 +1422,7 @@ thread1:    pthread_mutex_lock(&amp;mutex);    while (!condition)          pthre
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
