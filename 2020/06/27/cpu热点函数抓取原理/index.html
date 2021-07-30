@@ -39,7 +39,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="leveldb," />
+  <meta name="keywords" content="Linux,动态跟踪技术," />
 
 
 
@@ -55,16 +55,16 @@
 
 
 
-<meta name="description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
+<meta name="description" content="cpu热点抓取原理，怎么才能知道是进程的哪一个函数消耗了cpu资源呢？目前gperftools,async-profile,perf 都针对不同的语言提供了抓取cpu热点函数的功能，他们抓取的原理都很类似，如果不依赖内核支持的话，简单来说就是在用户空间设置一个timer定时器，timer以一定的频率向进程发送信号，在信号处理函数中可以拿到进程正在执行的调用栈，将采集到这些调用栈统计分析一下，数量最">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leveldb的block cache 大小对性能的影响">
-<meta property="og:url" content="http://yoursite.com/2016/06/09/leveldb的block cache 大小对性能的影响/index.html">
+<meta property="og:title" content="CPU热点函数抓取原理">
+<meta property="og:url" content="http://yoursite.com/2020/06/27/cpu热点函数抓取原理/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
-<meta property="og:updated_time" content="2019-11-11T06:20:23.000Z">
+<meta property="og:description" content="cpu热点抓取原理，怎么才能知道是进程的哪一个函数消耗了cpu资源呢？目前gperftools,async-profile,perf 都针对不同的语言提供了抓取cpu热点函数的功能，他们抓取的原理都很类似，如果不依赖内核支持的话，简单来说就是在用户空间设置一个timer定时器，timer以一定的频率向进程发送信号，在信号处理函数中可以拿到进程正在执行的调用栈，将采集到这些调用栈统计分析一下，数量最">
+<meta property="og:updated_time" content="2021-07-30T13:48:59.711Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="leveldb的block cache 大小对性能的影响">
-<meta name="twitter:description" content="leveldb使用的缓存：//   indexes and  bloom filters(table索引信息缓存)//   block cache (解压后的数据)//   page cache （压缩的数据）//   indexes and  bloom filters    block cache //         |           |            |//">
+<meta name="twitter:title" content="CPU热点函数抓取原理">
+<meta name="twitter:description" content="cpu热点抓取原理，怎么才能知道是进程的哪一个函数消耗了cpu资源呢？目前gperftools,async-profile,perf 都针对不同的语言提供了抓取cpu热点函数的功能，他们抓取的原理都很类似，如果不依赖内核支持的话，简单来说就是在用户空间设置一个timer定时器，timer以一定的频率向进程发送信号，在信号处理函数中可以拿到进程正在执行的调用栈，将采集到这些调用栈统计分析一下，数量最">
 
 
 
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title> leveldb的block cache 大小对性能的影响 | mumumuwudi的博客 </title>
+  <title> CPU热点函数抓取原理 | mumumuwudi的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -212,7 +212,7 @@
             
             
               
-                leveldb的block cache 大小对性能的影响
+                CPU热点函数抓取原理
               
             
           </h1>
@@ -224,8 +224,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-09T07:59:34+08:00" content="2016-06-09">
-              2016-06-09
+            <time itemprop="dateCreated" datetime="2020-06-27T00:17:37+08:00" content="2020-06-27">
+              2020-06-27
             </time>
           </span>
 
@@ -238,8 +238,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/leveldb/" itemprop="url" rel="index">
-                    <span itemprop="name">leveldb</span>
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
                   </a>
                 </span>
 
@@ -270,10 +270,17 @@
       
 
       
-        <p>leveldb使用的缓存：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   indexes and  bloom filters(table索引信息缓存)</span></span><br><span class="line"><span class="comment">//   block cache (解压后的数据)</span></span><br><span class="line"><span class="comment">//   page cache （压缩的数据）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//   indexes and  bloom filters    block cache </span></span><br><span class="line"><span class="comment">//         |           |            |</span></span><br><span class="line"><span class="comment">//         \           |           /                    </span></span><br><span class="line"><span class="comment">//                </span></span><br><span class="line"><span class="comment">//                  page cache </span></span><br><span class="line"><span class="comment">//                     |</span></span><br><span class="line"><span class="comment">//                     |</span></span><br><span class="line"><span class="comment">//                    disk</span></span><br></pre></td></tr></table></figure></p>
-<p>在非DirectIO下，block cache作为文件数据的cache层，下层还有os 的page cache 缓存了<br>硬盘中的文件, 所以block cache大小对系统性能的影响不大. block cache 因为是解压<br>后的数据，所以可以降低一下cpu的解压时间. 过大的 block cache 以为会导致page cache<br>数据减少,因为block cache 和 page cache 缓存的部分数据重复导致整体数据缓存量减少<br>hit rate 还有可能下降，通常来说leveldb 依赖 os的 page cache来减少文件I/O。</p>
-<p>rocksdb统计信息比较丰富,通过以上参数信息可以知道block cache 和 page cache的命中情况:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//   block_cache_hit_count </span></span><br><span class="line"><span class="comment">//   block_read_count</span></span><br><span class="line"><span class="comment">//   block_read_byte</span></span><br></pre></td></tr></table></figure></p>
-<p>在DirectIO下，文件缓存全部依赖 block cache, 所以block cache越大越好<br>通常设置为系统内存的60%-80%</p>
+        <p>cpu热点抓取原理，怎么才能知道是进程的哪一个函数消耗了cpu资源呢？目前gperftools,async-profile,perf 都针对不同的语言提供了抓取cpu热点函数的功能，他们抓取的原理都很类似，如果不依赖内核支持的话，简单来说就是在用户空间设置一个timer定时器，timer以一定的频率向进程发送信号，在信号处理函数中可以拿到进程正在执行的调用栈，将采集到这些调用栈统计分析一下，数量最多的那个及时占用cpu最高的热点函数<br>gperftools的实现代码在<a href="https://github.com/gperftools/gperftools/blob/51b4875f8ade3e0930eed2dc2a842ec607a94a2c/src/profiler.cc" target="_blank" rel="external">profiler.cc</a>, 中定时器回调函数处理流程调用栈如下图所示:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//    GetStackTrace() and store in the Bucket</span></span><br><span class="line"><span class="comment">//             |</span></span><br><span class="line"><span class="comment">//    ProfileData::Add(unsigned long pc)   //在信号处理函数中获取当前的调用栈地址信息并存储</span></span><br><span class="line"><span class="comment">//             |</span></span><br><span class="line"><span class="comment">//    ProfileData::prof_handler()     // SIGPROF信号处理函数</span></span><br><span class="line"><span class="comment">//             |</span></span><br><span class="line"><span class="comment">//    &lt; SIGPROF signal &gt;</span></span><br></pre></td></tr></table></figure>
+<p>在profile.cc中生成的CPUPROFILE只是存储了调用栈的二进制地址信息. 至于对应符号表的对应关系则是通过pprof这个perl脚本来实现<br>里面用到了nm/objdump/addr2line等一些工具来帮助找到地址和函数名称的对应关系</p>
+<p>async-proflie的itimer引擎使用了跟gperftools一样的原理，代码更加简单和清晰:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="string">"itimer.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="string">"os.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="string">"profiler.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> ITimer::_interval;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SIGPROF信号处理函数，在函数中获取进程的当前调用栈并存储</span></span><br><span class="line"><span class="keyword">void</span> ITimer::signalHandler(<span class="keyword">int</span> signo, <span class="keyword">siginfo_t</span>* siginfo, <span class="keyword">void</span>* ucontext) &#123;</span><br><span class="line">    Profiler::_instance.recordSample(ucontext, _interval, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Error ITimer::start(Arguments&amp; args) &#123;</span><br><span class="line">    <span class="keyword">if</span> (args._interval &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Error(<span class="string">"interval must be positive"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    _interval = args._interval ? args._interval : DEFAULT_INTERVAL;</span><br><span class="line"></span><br><span class="line">    OS::installSignalHandler(SIGPROF, signalHandler);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> sec = _interval / <span class="number">1000000000</span>;</span><br><span class="line">    <span class="keyword">long</span> usec = (_interval % <span class="number">1000000000</span>) / <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">struct</span> itimerval tv = &#123;&#123;sec, usec&#125;, &#123;sec, usec&#125;&#125;;</span><br><span class="line">    setitimer(ITIMER_PROF, &amp;tv, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">//设置timer timer 到期后向当前进程发送SIGPROF信号</span></span><br><span class="line">    <span class="keyword">return</span> Error::OK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> ITimer::stop() &#123;</span><br><span class="line">    <span class="keyword">struct</span> itimerval tv = &#123;&#123;<span class="number">0</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, <span class="number">0</span>&#125;&#125;;</span><br><span class="line">    setitimer(ITIMER_PROF, &amp;tv, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>原理比较清楚了，但是async-profile默认的引擎和perf工具则是依赖perf_event来抓取热点的并没有使用timer.<br>perf是一个功能强大的性能统计和分析工具 <a href="https://perf.wiki.kernel.org/index.php/Tutorial" target="_blank" rel="external">https://perf.wiki.kernel.org/index.php/Tutorial</a><br>perf_event是perf相关的一个系统调用,由内核提供给进程使用功能强大，其中的抓取cpu热点分支相对于上述timer方式存在下面几个优点:</p>
+<ol>
+<li>由硬件和内核触发，更加精确 在最初版本中可以看到当前运行函数的调用栈由intel_pmu_handle_irq（）触发，This handler is triggered by the local APIC</li>
+<li>因为代码在内核中，抓取热点函数调用栈非常的高效，对应用程序性能几乎没有影响</li>
+<li>不同于gperftools和async profile需要再目标程序中加载额外代码， perf_event对于目标程序没有任何入侵性。</li>
+<li>perf_event可抓取的信息非常丰富，cpu热点只是其中之一</li>
+</ol>
 <p>转载请注明出处，谢谢。。</p>
 
       
@@ -289,7 +296,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/leveldb/" rel="tag">#leveldb</a>
+            <a href="/tags/Linux/" rel="tag">#Linux</a>
+          
+            <a href="/tags/动态跟踪技术/" rel="tag">#动态跟踪技术</a>
           
         </div>
       
@@ -298,16 +307,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/02/15/利用vmtouch管理文件的page cache/" rel="next" title="利用vmtouch管理文件的page cache">
-                <i class="fa fa-chevron-left"></i> 利用vmtouch管理文件的page cache
+              <a href="/2016/10/16/leveldb的seek_compaction/" rel="next" title="leveldb的seek_compaction">
+                <i class="fa fa-chevron-left"></i> leveldb的seek_compaction
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/10/16/leveldb的seek_compaction/" rel="prev" title="leveldb的seek_compaction">
-                leveldb的seek_compaction <i class="fa fa-chevron-right"></i>
+              <a href="/2020/08/27/ Linux动态跟踪技术/" rel="prev" title="Linux动态跟踪技术(内部分享)">
+                Linux动态跟踪技术(内部分享) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
