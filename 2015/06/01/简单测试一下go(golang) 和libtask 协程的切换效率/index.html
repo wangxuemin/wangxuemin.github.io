@@ -39,7 +39,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="c-ares,dns," />
+  <meta name="keywords" content="go,libtask,协程," />
 
 
 
@@ -55,19 +55,22 @@
 
 
 
-<meta name="description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
-下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+<meta name="description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="c-ares 一个C语言的异步DNS解析库">
-<meta property="og:url" content="http://yoursite.com/2015/07/31/c-ares 一个C语言的异步DNS解析库/index.html">
+<meta property="og:title" content="简单测试一下go(golang) 和libtask 协程的切换效率">
+<meta property="og:url" content="http://yoursite.com/2015/06/01/简单测试一下go(golang) 和libtask 协程的切换效率/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
-下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
-<meta property="og:updated_time" content="2025-12-13T12:49:10.607Z">
+<meta property="og:description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
+<meta property="og:updated_time" content="2025-12-13T13:11:45.566Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="c-ares 一个C语言的异步DNS解析库">
-<meta name="twitter:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
-下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+<meta name="twitter:title" content="简单测试一下go(golang) 和libtask 协程的切换效率">
+<meta name="twitter:description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
 
 
 
@@ -85,7 +88,7 @@
   };
 </script>
 
-  <title> c-ares 一个C语言的异步DNS解析库 | mumumuwudi的博客 </title>
+  <title> 简单测试一下go(golang) 和libtask 协程的切换效率 | mumumuwudi的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -215,7 +218,7 @@
             
             
               
-                c-ares 一个C语言的异步DNS解析库
+                简单测试一下go(golang) 和libtask 协程的切换效率
               
             
           </h1>
@@ -227,8 +230,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-07-31T08:17:37+08:00" content="2015-07-31">
-              2015-07-31
+            <time itemprop="dateCreated" datetime="2015-06-01T22:59:34+08:00" content="2015-06-01">
+              2015-06-01
             </time>
           </span>
 
@@ -241,8 +244,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
                   </a>
                 </span>
 
@@ -273,9 +276,10 @@
       
 
       
-        <p>c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步<br>解析，libcurl, libevent, gevent, nodejs都在使用。</p>
-<p>下面摘自Stack Overflow的一个例子:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ares.h&gt;</span></span></span><br><span class="line"><span class="comment">//ares  处理完成，返回DNS解析的信息</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dns_callback</span> <span class="params">(<span class="keyword">void</span>* arg, <span class="keyword">int</span> status, <span class="keyword">int</span> timeouts, <span class="keyword">struct</span> hostent* host)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(status == ARES_SUCCESS)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; host-&gt;h_name &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lookup failed: "</span> &lt;&lt; status &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main_loop</span><span class="params">(ares_channel &amp;channel)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> nfds, count;</span><br><span class="line">    fd_set readers, writers;</span><br><span class="line">    timeval tv, *tvp;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        FD_ZERO(&amp;readers);</span><br><span class="line">        FD_ZERO(&amp;writers);</span><br><span class="line">        <span class="comment">//获取ares channel使用的FD</span></span><br><span class="line">        nfds = ares_fds(channel, &amp;readers, &amp;writers);   </span><br><span class="line">        <span class="keyword">if</span> (nfds == <span class="number">0</span>)</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        tvp = ares_timeout(channel, <span class="literal">NULL</span>, &amp;tv);       </span><br><span class="line">        <span class="comment">//将ares的SOCKET FD 加入事件循环</span></span><br><span class="line">        count = select(nfds, &amp;readers, &amp;writers, <span class="literal">NULL</span>, tvp);   </span><br><span class="line">        <span class="comment">// 有事件发生 交由ares 处理</span></span><br><span class="line">        ares_process(channel, &amp;readers, &amp;writers);  </span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> in_addr ip;</span><br><span class="line">    <span class="keyword">int</span> res;</span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">2</span> ) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"usage: "</span> &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">" ip.address\n"</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    inet_aton(argv[<span class="number">1</span>], &amp;ip);</span><br><span class="line">    <span class="comment">// 创建一个ares_channel</span></span><br><span class="line">    ares_channel channel;    </span><br><span class="line">     <span class="comment">// ares 对channel 进行初始化</span></span><br><span class="line">    <span class="keyword">if</span>((res = ares_init(&amp;channel)) != ARES_SUCCESS) &#123;    </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ares feiled: "</span> &lt;&lt; res &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//传递给c-ares channal 和 回调</span></span><br><span class="line">    ares_gethostbyaddr(channel, &amp;ip, <span class="keyword">sizeof</span> ip, AF_INET, dns_callback, <span class="literal">NULL</span>); </span><br><span class="line">    main_loop(channel);   <span class="comment">//主程序事件循环</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果有需要可以采用c-ares实现一个自己的DNS异步解析的Server，做成独立的dns解析服务</p>
+        <p>简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，<br>测试机器是我的mac air 安装的centos虚拟机(只有一个核)<br>代码没有采用任何优化，只是使用默认配置</p>
+<p>测试结论：<br>golang 切换100w次 需要 295ms<br>libtask 切换100w次 需要1446ms</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"runtime"</span></span><br><span class="line">   <span class="string">"time"</span></span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> test()&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>&#123;</span><br><span class="line">		i++</span><br><span class="line">		<span class="keyword">if</span> i &gt;<span class="number">1000000</span>&#123;</span><br><span class="line">		  fmt.Printf(<span class="string">"end switch \n"</span>)</span><br><span class="line">		  <span class="keyword">break</span></span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		  <span class="comment">//fmt.Printf(" in test i:%d  \n", i)</span></span><br><span class="line">		&#125;</span><br><span class="line">		runtime.Gosched()</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">"GOMAXPROCS :%d \n"</span>,runtime.GOMAXPROCS(<span class="number">1</span>))</span><br><span class="line">	tv1 := time.Now().UnixNano()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> test()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// in main goroutine</span></span><br><span class="line">	test()</span><br><span class="line"></span><br><span class="line">	tv2 := time.Now().UnixNano()</span><br><span class="line"></span><br><span class="line">	usetime := (tv2 - tv1)/<span class="number">1000000</span></span><br><span class="line">	fmt.Printf(<span class="string">"use time:  %dms \n"</span>, usetime)</span><br><span class="line">	fmt.Printf(<span class="string">"end main \n"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>lib task测试代码:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;task.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> tasknswitch;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> &#123; STACK = <span class="number">32768</span> &#125;;</span><br><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">struct</span> timeval tv1, tv2;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">testswitch</span><span class="params">(<span class="keyword">void</span> *v)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> ms;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">  &#123;</span><br><span class="line">	  i++;</span><br><span class="line">	  <span class="keyword">if</span>( i&lt; <span class="number">1000000</span>)</span><br><span class="line">	  &#123;</span><br><span class="line"></span><br><span class="line">	    <span class="comment">//printf("int task i:%d \n", i);</span></span><br><span class="line">	    taskyield();</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">else</span></span><br><span class="line">	  &#123; </span><br><span class="line">	    <span class="comment">//  chansendul(c, 0);</span></span><br><span class="line">	    <span class="comment">//taskexitall(0);</span></span><br><span class="line">	    gettimeofday(&amp;tv2,<span class="literal">NULL</span>);</span><br><span class="line">	    ms = ((tv2.tv_sec - tv1.tv_sec)*<span class="number">1000000</span> + (tv2.tv_usec - tv1.tv_usec))/<span class="number">1000</span>;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"time use %d\n "</span>, ms);</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"task swithch %d \n"</span>, tasknswitch);</span><br><span class="line"></span><br><span class="line">	    taskexitall(<span class="number">0</span>); </span><br><span class="line">	   &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">taskmain</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>  n;</span><br><span class="line">	<span class="comment">//c = chancreate(sizeof(unsigned long), 0);</span></span><br><span class="line">	gettimeofday(&amp;tv1, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="comment">//for(i=1; i&lt;; i++)&#123;</span></span><br><span class="line">	taskcreate(testswitch, <span class="number">0</span>, STACK);</span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	testswitch(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>转载请注明出处，谢谢。。</p>
 
       
@@ -291,9 +295,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/c-ares/" rel="tag">#c-ares</a>
+            <a href="/tags/go/" rel="tag">#go</a>
           
-            <a href="/tags/dns/" rel="tag">#dns</a>
+            <a href="/tags/libtask/" rel="tag">#libtask</a>
+          
+            <a href="/tags/协程/" rel="tag">#协程</a>
           
         </div>
       
@@ -302,16 +308,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/30/FreeBSD Kqueue的实现原理/" rel="next" title="FreeBSD Kqueue的实现原理">
-                <i class="fa fa-chevron-left"></i> FreeBSD Kqueue的实现原理
+              <a href="/2015/05/29/c-ares 一个C语言的异步DNS解析库/" rel="next" title="c-ares 一个C语言的异步DNS解析库">
+                <i class="fa fa-chevron-left"></i> c-ares 一个C语言的异步DNS解析库
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/07/31/Tokyo Cabinet Hash数据库存储和索引结构/" rel="prev" title="Tokyo Cabinet Hash数据库存储和索引结构">
-                Tokyo Cabinet Hash数据库存储和索引结构 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/07/23/关于SSDB的网络模型/" rel="prev" title="关于SSDB的网络模型">
+                关于SSDB的网络模型 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

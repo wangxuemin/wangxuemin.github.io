@@ -39,7 +39,7 @@
 <link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="linux,buffer,cache," />
+  <meta name="keywords" content="c-ares,dns," />
 
 
 
@@ -55,18 +55,19 @@
 
 
 
-<meta name="description" content="page cahce 缓存了页面用来优化文件I/O, buffer cache 缓存了磁盘块用来优化 block I/O.在linux kernel2.4之前，这两个缓存是不同的： 文件在page cache里， 磁盘块在buffer cache里. 这样某些系统调用(mmap)数据需要在两层cache中都保存了一份. 许多unix系统都遵循类似的模式. 这样很容易实现， 但是看起来很不优雅和低效">
+<meta name="description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux 内存中buffer 和cache 的区别">
-<meta property="og:url" content="http://yoursite.com/2015/08/04/linux 内存中buffer 和cache 的区别/index.html">
+<meta property="og:title" content="c-ares 一个C语言的异步DNS解析库">
+<meta property="og:url" content="http://yoursite.com/2015/05/29/c-ares 一个C语言的异步DNS解析库/index.html">
 <meta property="og:site_name" content="mumumuwudi的博客">
-<meta property="og:description" content="page cahce 缓存了页面用来优化文件I/O, buffer cache 缓存了磁盘块用来优化 block I/O.在linux kernel2.4之前，这两个缓存是不同的： 文件在page cache里， 磁盘块在buffer cache里. 这样某些系统调用(mmap)数据需要在两层cache中都保存了一份. 许多unix系统都遵循类似的模式. 这样很容易实现， 但是看起来很不优雅和低效">
-<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/buf-cache-1.png">
-<meta property="og:updated_time" content="2025-12-13T12:49:11.047Z">
+<meta property="og:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+<meta property="og:updated_time" content="2025-12-13T13:11:44.725Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux 内存中buffer 和cache 的区别">
-<meta name="twitter:description" content="page cahce 缓存了页面用来优化文件I/O, buffer cache 缓存了磁盘块用来优化 block I/O.在linux kernel2.4之前，这两个缓存是不同的： 文件在page cache里， 磁盘块在buffer cache里. 这样某些系统调用(mmap)数据需要在两层cache中都保存了一份. 许多unix系统都遵循类似的模式. 这样很容易实现， 但是看起来很不优雅和低效">
-<meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/buf-cache-1.png">
+<meta name="twitter:title" content="c-ares 一个C语言的异步DNS解析库">
+<meta name="twitter:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
 
 
 
@@ -84,7 +85,7 @@
   };
 </script>
 
-  <title> linux 内存中buffer 和cache 的区别 | mumumuwudi的博客 </title>
+  <title> c-ares 一个C语言的异步DNS解析库 | mumumuwudi的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -214,7 +215,7 @@
             
             
               
-                linux 内存中buffer 和cache 的区别
+                c-ares 一个C语言的异步DNS解析库
               
             
           </h1>
@@ -226,8 +227,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-08-04T04:17:37+08:00" content="2015-08-04">
-              2015-08-04
+            <time itemprop="dateCreated" datetime="2015-05-29T08:17:37+08:00" content="2015-05-29">
+              2015-05-29
             </time>
           </span>
 
@@ -272,12 +273,9 @@
       
 
       
-        <p>page cahce 缓存了页面用来优化文件I/O, buffer cache 缓存了磁盘块用来优化 block I/O.在linux kernel<br>2.4之前，这两个缓存是不同的： 文件在page cache里， 磁盘块在buffer cache里. 这样某些系统调用(mmap<br>)数据需要在两层cache中都保存了一份. 许多unix系统都遵循类似的模式. 这样很容易实现， 但是看起来很不<br>优雅和低效, 从linux 2.4开始两种cache开始统一起来. VM子系统接管了I/O读写和页面缓存, 如果缓存的数据<br>是一个文件内容（大多数据都是这样）这时buffer cache指向了page cache，也就是说数据只存在一份，buffer<br>cache向硬盘发起读请求时数据会直接写入到 page cache中,因为指向了同一地址.  page cache 就可以简单看<br>做磁盘的一层缓存.</p>
-<p>buffer cache 也会独立存在， 因为内核有时候需要普通小的block I/O 而不是以页为单位读写，硬盘大<br>多数是文件内容的读写(以页为单位)， 此时buffer cache复用了page cache的内存, 但是有些少量的数据并不<br>是文件内容例如：文件元数据(inode,dentry等)和原始块 I/O, 这种情况下的磁盘缓存则通过buffer cache 实现.<br>关于上面的一段历史可以参照 : </p>
-<p><a href="https://www.usenix.org/legacy/event/usenix2000/freenix/full_papers/silvers/silvers_html/" target="_blank" rel="external">https://www.usenix.org/legacy/event/usenix2000/freenix/full_papers/silvers/silvers_html/</a></p>
-<p>简单说来page cache缓存了文件内容而buffer cache 缓存了一些文件系统需要用的元数据包括磁盘中的inode<br>目录等信息. Linux 内核情景分析中，有些章节有说明这个问题，如下：</p>
-<p><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/buf-cache-1.png" alt=""> </p>
-<p>参考资料:<a href="http://www.quora.com/Linux-Kernel/What-is-the-major-difference-between-the-buffer-cache-and-the-page-cache" target="_blank" rel="external">http://www.quora.com/Linux-Kernel/What-is-the-major-difference-between-the-buffer-cache-and-the-page-cache</a></p>
+        <p>c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步<br>解析，libcurl, libevent, gevent, nodejs都在使用。</p>
+<p>下面摘自Stack Overflow的一个例子:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ares.h&gt;</span></span></span><br><span class="line"><span class="comment">//ares  处理完成，返回DNS解析的信息</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dns_callback</span> <span class="params">(<span class="keyword">void</span>* arg, <span class="keyword">int</span> status, <span class="keyword">int</span> timeouts, <span class="keyword">struct</span> hostent* host)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(status == ARES_SUCCESS)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; host-&gt;h_name &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lookup failed: "</span> &lt;&lt; status &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main_loop</span><span class="params">(ares_channel &amp;channel)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> nfds, count;</span><br><span class="line">    fd_set readers, writers;</span><br><span class="line">    timeval tv, *tvp;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        FD_ZERO(&amp;readers);</span><br><span class="line">        FD_ZERO(&amp;writers);</span><br><span class="line">        <span class="comment">//获取ares channel使用的FD</span></span><br><span class="line">        nfds = ares_fds(channel, &amp;readers, &amp;writers);   </span><br><span class="line">        <span class="keyword">if</span> (nfds == <span class="number">0</span>)</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        tvp = ares_timeout(channel, <span class="literal">NULL</span>, &amp;tv);       </span><br><span class="line">        <span class="comment">//将ares的SOCKET FD 加入事件循环</span></span><br><span class="line">        count = select(nfds, &amp;readers, &amp;writers, <span class="literal">NULL</span>, tvp);   </span><br><span class="line">        <span class="comment">// 有事件发生 交由ares 处理</span></span><br><span class="line">        ares_process(channel, &amp;readers, &amp;writers);  </span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> in_addr ip;</span><br><span class="line">    <span class="keyword">int</span> res;</span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">2</span> ) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"usage: "</span> &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">" ip.address\n"</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    inet_aton(argv[<span class="number">1</span>], &amp;ip);</span><br><span class="line">    <span class="comment">// 创建一个ares_channel</span></span><br><span class="line">    ares_channel channel;    </span><br><span class="line">     <span class="comment">// ares 对channel 进行初始化</span></span><br><span class="line">    <span class="keyword">if</span>((res = ares_init(&amp;channel)) != ARES_SUCCESS) &#123;    </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ares feiled: "</span> &lt;&lt; res &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//传递给c-ares channal 和 回调</span></span><br><span class="line">    ares_gethostbyaddr(channel, &amp;ip, <span class="keyword">sizeof</span> ip, AF_INET, dns_callback, <span class="literal">NULL</span>); </span><br><span class="line">    main_loop(channel);   <span class="comment">//主程序事件循环</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果有需要可以采用c-ares实现一个自己的DNS异步解析的Server，做成独立的dns解析服务</p>
 <p>转载请注明出处，谢谢。。</p>
 
       
@@ -293,11 +291,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/linux/" rel="tag">#linux</a>
+            <a href="/tags/c-ares/" rel="tag">#c-ares</a>
           
-            <a href="/tags/buffer/" rel="tag">#buffer</a>
-          
-            <a href="/tags/cache/" rel="tag">#cache</a>
+            <a href="/tags/dns/" rel="tag">#dns</a>
           
         </div>
       
@@ -306,15 +302,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/07/31/Tokyo Cabinet Hash数据库存储和索引结构/" rel="next" title="Tokyo Cabinet Hash数据库存储和索引结构">
-                <i class="fa fa-chevron-left"></i> Tokyo Cabinet Hash数据库存储和索引结构
+              <a href="/2015/05/29/go(golang) dns 解析源码 dnsclient_unix.go 分析/" rel="next" title="go(golang) dns 解析源码 go/src/net/dnsclient_unix.go 分析">
+                <i class="fa fa-chevron-left"></i> go(golang) dns 解析源码 go/src/net/dnsclient_unix.go 分析
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/08/13/简单测试一下go(golang) 和libtask 协程的切换效率/" rel="prev" title="简单测试一下go(golang) 和libtask 协程的切换效率">
+              <a href="/2015/06/01/简单测试一下go(golang) 和libtask 协程的切换效率/" rel="prev" title="简单测试一下go(golang) 和libtask 协程的切换效率">
                 简单测试一下go(golang) 和libtask 协程的切换效率 <i class="fa fa-chevron-right"></i>
               </a>
             
