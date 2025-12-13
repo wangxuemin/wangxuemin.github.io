@@ -1,0 +1,393 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="关于go dns解析的一些说明参照我的另一篇文章 –go (golang) DNS域名解析实现–go dns 解析 源码在go/src/net/dnsclient_unix.go,  lookupHost()通过向本地dns server发送请求，获得IP和域名的对应关系然后返回，函数调用关系如下：//lookupHost()//-&amp;gt;goLookupHostOrder()//--&amp;gt;go">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="go(golang) dns 解析源码 go/src/net/dnsclient_unix.go 分析">
+<meta property="og:url" content="http://yoursite.com/back_posts/go(golang) dns 解析源码 dnsclient_unix.go 分析.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="关于go dns解析的一些说明参照我的另一篇文章 –go (golang) DNS域名解析实现–go dns 解析 源码在go/src/net/dnsclient_unix.go,  lookupHost()通过向本地dns server发送请求，获得IP和域名的对应关系然后返回，函数调用关系如下：//lookupHost()//-&amp;gt;goLookupHostOrder()//--&amp;gt;go">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.449Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="go(golang) dns 解析源码 go/src/net/dnsclient_unix.go 分析">
+<meta name="twitter:description" content="关于go dns解析的一些说明参照我的另一篇文章 –go (golang) DNS域名解析实现–go dns 解析 源码在go/src/net/dnsclient_unix.go,  lookupHost()通过向本地dns server发送请求，获得IP和域名的对应关系然后返回，函数调用关系如下：//lookupHost()//-&amp;gt;goLookupHostOrder()//--&amp;gt;go">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    go(golang) dns 解析源码 go/src/net/dnsclient_unix.go 分析 | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>关于go dns解析的一些说明参照我的另一篇文章 –go (golang) DNS域名解析实现–<br>go dns 解析 源码在go/src/net/dnsclient_unix.go,  lookupHost()通过向本地dns server发送请求，获得IP和域名的<br>对应关系然后返回，函数调用关系如下：<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//lookupHost()</span></span><br><span class="line"><span class="comment">//-&gt;goLookupHostOrder()</span></span><br><span class="line"><span class="comment">//--&gt;goLookupIPOrder()</span></span><br><span class="line"><span class="comment">//---&gt;tryOneName()</span></span><br><span class="line"><span class="comment">//----&gt;exchange()</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"><span class="keyword">func</span> exchange(server, name <span class="keyword">string</span>, qtype <span class="keyword">uint16</span>, timeout time.Duration) (*dnsMsg, error) &#123;</span><br><span class="line">	d := Dialer&#123;Timeout: timeout&#125;</span><br><span class="line">	out := dnsMsg&#123;</span><br><span class="line">		dnsMsgHdr: dnsMsgHdr&#123;</span><br><span class="line">			recursion_desired: <span class="literal">true</span>,</span><br><span class="line">		&#125;,</span><br><span class="line">		question: []dnsQuestion&#123;</span><br><span class="line">			&#123;name, qtype, dnsClassINET&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> _, network := <span class="keyword">range</span> []<span class="keyword">string</span>&#123;<span class="string">"udp"</span>, <span class="string">"tcp"</span>&#125; &#123;</span><br><span class="line">		c, err := d.dialDNS(network, server)    <span class="comment">//创建UDP</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">defer</span> c.Close()</span><br><span class="line">		<span class="keyword">if</span> timeout &gt; <span class="number">0</span> &#123;</span><br><span class="line">			c.SetDeadline(time.Now().Add(timeout))</span><br><span class="line">		&#125;</span><br><span class="line">		out.id = <span class="keyword">uint16</span>(rand.Int()) ^ <span class="keyword">uint16</span>(time.Now().UnixNano())</span><br><span class="line">		<span class="keyword">if</span> err := c.writeDNSQuery(&amp;out); err != <span class="literal">nil</span> &#123;   <span class="comment">//发送DNS请求</span></span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		in, err := c.readDNSResponse()   <span class="comment">//解析DNS请求得到IP</span></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> in.id != out.id &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"DNS message ID mismatch"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> in.truncated &#123; <span class="comment">// see RFC 5966</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> in, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"no answer from DNS server"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的timeout 是 dns 超时时间 是在dnsconfig_unix.go 文件中读取 /etc/reslove.conf  的配置决定的<br>net.go中的DialTimeout函数也会走到DNS解析流程中，该函数最终会调用到 lookupIPDeadline 启用一个新的协<br>程去解析DNS， 具体调用栈如下:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//DialTimeout()</span></span><br><span class="line"><span class="comment">//-&gt;resolveAddrList()</span></span><br><span class="line"><span class="comment">//--&gt;internetAddrList()</span></span><br><span class="line"><span class="comment">//---&gt;lookupIPDeadline()</span></span><br><span class="line"><span class="comment">//----&gt;lookupGroup.DoChan() 在新的协程中去做 dns解析</span></span><br><span class="line"><span class="comment">//-----&gt;lookupIP()</span></span><br><span class="line"><span class="comment">//------&gt;goLookupIPOrder()</span></span><br></pre></td></tr></table></figure></p>
+<p>总之，纯go语言的 DNS解析流程还是比较完善的~~</p>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

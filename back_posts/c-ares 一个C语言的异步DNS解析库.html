@@ -1,0 +1,395 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="c-ares 一个C语言的异步DNS解析库">
+<meta property="og:url" content="http://yoursite.com/back_posts/c-ares 一个C语言的异步DNS解析库.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.454Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="c-ares 一个C语言的异步DNS解析库">
+<meta name="twitter:description" content="c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步解析，libcurl, libevent, gevent, nodejs都在使用。
+下面摘自Stack Overflow的一个例子:#include &amp;lt;time.h&amp;gt;#include &amp;lt;iostream&amp;gt;#include &amp;lt;netdb.h&amp;gt;#include">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    c-ares 一个C语言的异步DNS解析库 | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>c-ares是一个C语言的异步DNS解析库，可以很方便的和使用者的事件循环统一起来，实现DNS的非阻塞异步<br>解析，libcurl, libevent, gevent, nodejs都在使用。</p>
+<p>下面摘自Stack Overflow的一个例子:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ares.h&gt;</span></span></span><br><span class="line"><span class="comment">//ares  处理完成，返回DNS解析的信息</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dns_callback</span> <span class="params">(<span class="keyword">void</span>* arg, <span class="keyword">int</span> status, <span class="keyword">int</span> timeouts, <span class="keyword">struct</span> hostent* host)</span> </span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(status == ARES_SUCCESS)</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; host-&gt;h_name &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lookup failed: "</span> &lt;&lt; status &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main_loop</span><span class="params">(ares_channel &amp;channel)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> nfds, count;</span><br><span class="line">    fd_set readers, writers;</span><br><span class="line">    timeval tv, *tvp;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        FD_ZERO(&amp;readers);</span><br><span class="line">        FD_ZERO(&amp;writers);</span><br><span class="line">        <span class="comment">//获取ares channel使用的FD</span></span><br><span class="line">        nfds = ares_fds(channel, &amp;readers, &amp;writers);   </span><br><span class="line">        <span class="keyword">if</span> (nfds == <span class="number">0</span>)</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        tvp = ares_timeout(channel, <span class="literal">NULL</span>, &amp;tv);       </span><br><span class="line">        <span class="comment">//将ares的SOCKET FD 加入事件循环</span></span><br><span class="line">        count = select(nfds, &amp;readers, &amp;writers, <span class="literal">NULL</span>, tvp);   </span><br><span class="line">        <span class="comment">// 有事件发生 交由ares 处理</span></span><br><span class="line">        ares_process(channel, &amp;readers, &amp;writers);  </span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> in_addr ip;</span><br><span class="line">    <span class="keyword">int</span> res;</span><br><span class="line">    <span class="keyword">if</span>(argc &lt; <span class="number">2</span> ) &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"usage: "</span> &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">" ip.address\n"</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    inet_aton(argv[<span class="number">1</span>], &amp;ip);</span><br><span class="line">    <span class="comment">// 创建一个ares_channel</span></span><br><span class="line">    ares_channel channel;    </span><br><span class="line">     <span class="comment">// ares 对channel 进行初始化</span></span><br><span class="line">    <span class="keyword">if</span>((res = ares_init(&amp;channel)) != ARES_SUCCESS) &#123;    </span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"ares feiled: "</span> &lt;&lt; res &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//传递给c-ares channal 和 回调</span></span><br><span class="line">    ares_gethostbyaddr(channel, &amp;ip, <span class="keyword">sizeof</span> ip, AF_INET, dns_callback, <span class="literal">NULL</span>); </span><br><span class="line">    main_loop(channel);   <span class="comment">//主程序事件循环</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果有需要可以采用c-ares实现一个自己的DNS异步解析的Server，做成独立的dns解析服务</p>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

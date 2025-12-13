@@ -1,0 +1,405 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="关于LVS和FULLNAT的介绍可以看一下 淘宝吴佳明(普空)的视频  http://blog.aliyun.com/1750 ，FULLNAT模式很大简化了LVS的配置和部署，目前淘宝和百度基本上都在使用FULLNAT模式来作为接入侧的负载均衡模式.
+百度的LVS叫做BVS, Baidu Virtual Server, 是在LVS基础上修改的增加了L3 Though 和 SYN Porxy，貌似">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="lvs 负载均衡fullnat 模式clientip 怎样传递给 realserver">
+<meta property="og:url" content="http://yoursite.com/back_posts/lvs 负载均衡fullnat 模式clientip 怎样传递给 realserver.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="关于LVS和FULLNAT的介绍可以看一下 淘宝吴佳明(普空)的视频  http://blog.aliyun.com/1750 ，FULLNAT模式很大简化了LVS的配置和部署，目前淘宝和百度基本上都在使用FULLNAT模式来作为接入侧的负载均衡模式.
+百度的LVS叫做BVS, Baidu Virtual Server, 是在LVS基础上修改的增加了L3 Though 和 SYN Porxy，貌似">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/net.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-2.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-3.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-4.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-5.png">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.491Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lvs 负载均衡fullnat 模式clientip 怎样传递给 realserver">
+<meta name="twitter:description" content="关于LVS和FULLNAT的介绍可以看一下 淘宝吴佳明(普空)的视频  http://blog.aliyun.com/1750 ，FULLNAT模式很大简化了LVS的配置和部署，目前淘宝和百度基本上都在使用FULLNAT模式来作为接入侧的负载均衡模式.
+百度的LVS叫做BVS, Baidu Virtual Server, 是在LVS基础上修改的增加了L3 Though 和 SYN Porxy，貌似">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/net.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    lvs 负载均衡fullnat 模式clientip 怎样传递给 realserver | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>关于LVS和FULLNAT的介绍可以看一下 淘宝吴佳明(普空)的视频  <a href="http://blog.aliyun.com/1750" target="_blank" rel="external">http://blog.aliyun.com/1750</a> ，FULLNAT<br>模式很大简化了LVS的配置和部署，目前淘宝和百度基本上都在使用FULLNAT模式来作为接入侧的负载均衡模式.</p>
+<p>百度的LVS叫做BVS, Baidu Virtual Server, 是在LVS基础上修改的增加了L3 Though 和 SYN Porxy，貌似也<br>是吴佳明(普空)在百度搞的, 类似FULLNAT 项目.</p>
+<p>下面的图来自吴佳明(普空)的PPT, 自己重画了一遍，关于NAT和FULLNAT的区别如下图所示：<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/net.png" alt=""> </p>
+<p>看完上图后发现 FULLNAT有一个问题是：RealServer无法获得用户IP；淘宝通过叫TOA的方式解决的，<br>主要原理是：将client address放到了TCP Option里面带给后端RealServer，RealServer收到后保存在socket<br>的结构体里并通过toa内核模块hook了getname函数，这样当用户调用getname获取远端地址时，返回的是保<br>存在socket的TCPOption的IP. 百度的BVS是通过叫ttm模块实现的，其实现方式跟toa基本一样，只是没有开源.<br>实现原理图如下：<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-2.png" alt=""> </p>
+<p>下面看下上面说的逻辑的实现代码 <a href="https://github.com/alibaba/LVS" target="_blank" rel="external">https://github.com/alibaba/LVS</a></p>
+<p>lvs侧在TCP报文的选项中插入clientip代码:  tcp_fnat_in_handler():<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-3.png" alt=""><br>RS侧收到建连报文时，取出toa里面的client ip和port 存放在socket的use_data里, toa.c:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-4.png" alt=""><br>HOOK挂载：<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/lvs-5.png" alt=""> </p>
+<p>当应用层调用getpeername() 或者 getsocketname() 时，会进入到inet_getname_toa,如果存在toa信息则将socket<br>里存放的真是的clientip 返回给应用层。</p>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

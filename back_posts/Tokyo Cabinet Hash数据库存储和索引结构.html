@@ -1,0 +1,398 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="先看图:">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tokyo Cabinet Hash数据库存储和索引结构">
+<meta property="og:url" content="http://yoursite.com/back_posts/Tokyo Cabinet Hash数据库存储和索引结构.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="先看图:">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/tc-1.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/tc-2.png">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.445Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tokyo Cabinet Hash数据库存储和索引结构">
+<meta name="twitter:description" content="先看图:">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/tc-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    Tokyo Cabinet Hash数据库存储和索引结构 | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>先看图:<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/tc-1.png" alt=""><br> <a id="more"></a> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">head:              数据库头文件.</span><br><span class="line">bucket Array:      hash索引数组，存放对key进行hash之后得到的hash值所对应的第一个</span><br><span class="line">                   元素在数据库文件中的偏移量.  比如当第一个数据来的时候请求存储，这时计算到该key的</span><br><span class="line">                   hash index值是1，在bucket array数组中找到1对应的位置，发现是NULL，就将这个值</span><br><span class="line">                   存在目前数据存储区的第一个可用位置。并将这个位置记录到bucket array里.</span><br><span class="line"></span><br><span class="line">freepool array:    数据文件中空闲的区域，在新插入数据时先在里面查找是否有合适的位置，当删除一个record</span><br><span class="line">                   时，会把该record的偏移和大小记录到里面.</span><br><span class="line"></span><br><span class="line">record:            存放record的数据区.</span><br><span class="line"></span><br><span class="line">MSIZ:              最小mmap大小，即： head+bucket array的大小， hash数组的索引区必须使用mmap映射到</span><br><span class="line">                   内存</span><br><span class="line"></span><br><span class="line">XMSIZ:             内存比较充足的情况下， 除了mmap索引区域外还可以mmap一部分rcord区域的内容，加快读写</span><br><span class="line">                   速度</span><br></pre></td></tr></table></figure>
+<p>hash数据库的原理是通过key值用一个hash算法算出一个bidx值，然后在这个表(bucket array)里查这个bidx对应的<br>key-value值在文件中的偏移，再在文件中查找record记录.</p>
+<p>当然hash算法是会冲突的，当不同的key值算到了同样的hash，那我们仅用上面的一个bucket array是不能区分的,<br>Tokyo Cabinet采用一个二叉树来管理冲突的key,  hash相等的所有记录都是互相用数据单元的left，right指针<br>（其实就是一个offset值）连接起来的 </p>
+<p>如下图 :</p>
+<p><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/tc-2.png" alt=""> </p>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

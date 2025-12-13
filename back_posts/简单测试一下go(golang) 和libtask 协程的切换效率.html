@@ -1,0 +1,399 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",,," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="简单测试一下go(golang) 和libtask 协程的切换效率">
+<meta property="og:url" content="http://yoursite.com/back_posts/简单测试一下go(golang) 和libtask 协程的切换效率.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简单测试一下go(golang) 和libtask 协程的切换效率">
+<meta name="twitter:description" content="简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，测试机器是我的mac air 安装的centos虚拟机(只有一个核)代码没有采用任何优化，只是使用默认配置
+测试结论：golang 切换100w次 需要 295mslibtask 切换100w次 需要1446ms
+package mainimport (   &quot;fmt&quot;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    简单测试一下go(golang) 和libtask 协程的切换效率 | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>简单测试一下go(golang)和libtask协程的切换效率, libtask一个C语言的协程库，是go语言的前身很早期的原型，<br>测试机器是我的mac air 安装的centos虚拟机(只有一个核)<br>代码没有采用任何优化，只是使用默认配置</p>
+<p>测试结论：<br>golang 切换100w次 需要 295ms<br>libtask 切换100w次 需要1446ms</p>
+<figure class="highlight golang"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"runtime"</span></span><br><span class="line">   <span class="string">"time"</span></span><br><span class="line">   )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">int</span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> test()&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>&#123;</span><br><span class="line">		i++</span><br><span class="line">		<span class="keyword">if</span> i &gt;<span class="number">1000000</span>&#123;</span><br><span class="line">		  fmt.Printf(<span class="string">"end switch \n"</span>)</span><br><span class="line">		  <span class="keyword">break</span></span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		  <span class="comment">//fmt.Printf(" in test i:%d  \n", i)</span></span><br><span class="line">		&#125;</span><br><span class="line">		runtime.Gosched()</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">"GOMAXPROCS :%d \n"</span>,runtime.GOMAXPROCS(<span class="number">1</span>))</span><br><span class="line">	tv1 := time.Now().UnixNano()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> test()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// in main goroutine</span></span><br><span class="line">	test()</span><br><span class="line"></span><br><span class="line">	tv2 := time.Now().UnixNano()</span><br><span class="line"></span><br><span class="line">	usetime := (tv2 - tv1)/<span class="number">1000000</span></span><br><span class="line">	fmt.Printf(<span class="string">"use time:  %dms \n"</span>, usetime)</span><br><span class="line">	fmt.Printf(<span class="string">"end main \n"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>lib task测试代码:<br><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;task.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> tasknswitch;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> &#123; STACK = <span class="number">32768</span> &#125;;</span><br><span class="line"><span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">struct</span> timeval tv1, tv2;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">testswitch</span><span class="params">(<span class="keyword">void</span> *v)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> ms;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">  &#123;</span><br><span class="line">	  i++;</span><br><span class="line">	  <span class="keyword">if</span>( i&lt; <span class="number">1000000</span>)</span><br><span class="line">	  &#123;</span><br><span class="line"></span><br><span class="line">	    <span class="comment">//printf("int task i:%d \n", i);</span></span><br><span class="line">	    taskyield();</span><br><span class="line">	  &#125;</span><br><span class="line">	  <span class="keyword">else</span></span><br><span class="line">	  &#123; </span><br><span class="line">	    <span class="comment">//  chansendul(c, 0);</span></span><br><span class="line">	    <span class="comment">//taskexitall(0);</span></span><br><span class="line">	    gettimeofday(&amp;tv2,<span class="literal">NULL</span>);</span><br><span class="line">	    ms = ((tv2.tv_sec - tv1.tv_sec)*<span class="number">1000000</span> + (tv2.tv_usec - tv1.tv_usec))/<span class="number">1000</span>;</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"time use %d\n "</span>, ms);</span><br><span class="line">	    <span class="built_in">printf</span>(<span class="string">"task swithch %d \n"</span>, tasknswitch);</span><br><span class="line"></span><br><span class="line">	    taskexitall(<span class="number">0</span>); </span><br><span class="line">	   &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">taskmain</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span>  n;</span><br><span class="line">	<span class="comment">//c = chancreate(sizeof(unsigned long), 0);</span></span><br><span class="line">	gettimeofday(&amp;tv1, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="comment">//for(i=1; i&lt;; i++)&#123;</span></span><br><span class="line">	taskcreate(testswitch, <span class="number">0</span>, STACK);</span><br><span class="line">	<span class="comment">//&#125;</span></span><br><span class="line">	testswitch(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

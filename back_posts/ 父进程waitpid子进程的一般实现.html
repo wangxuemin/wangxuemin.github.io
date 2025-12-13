@@ -1,0 +1,402 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="web后台开发中很多框架都是prefork的进程模型的， 包括 php-fpm / flup / gunicorn 等等由主进程 fork 出一堆工作进程， 主进程监督工作进程的存活状态和数量，按照需要重启工作进程主进程的主要工作：1) 回收僵尸子进程2）重启子进程（重启策略看需求），逻辑比较简单，我们以gunicorn 为例 简单看一下代码
+–1– 主进程监听SIGCHLD信号， 创建管道, 调">
+<meta name="keywords">
+<meta property="og:type" content="website">
+<meta property="og:title" content="父进程waitpid子进程的一般实现">
+<meta property="og:url" content="http://yoursite.com/back_posts/ 父进程waitpid子进程的一般实现.html">
+<meta property="og:site_name" content="mumumuwudi的博客">
+<meta property="og:description" content="web后台开发中很多框架都是prefork的进程模型的， 包括 php-fpm / flup / gunicorn 等等由主进程 fork 出一堆工作进程， 主进程监督工作进程的存活状态和数量，按照需要重启工作进程主进程的主要工作：1) 回收僵尸子进程2）重启子进程（重启策略看需求），逻辑比较简单，我们以gunicorn 为例 简单看一下代码
+–1– 主进程监听SIGCHLD信号， 创建管道, 调">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-1.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-2.png">
+<meta property="og:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-3.png">
+<meta property="og:updated_time" content="2025-12-13T11:59:17.452Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="父进程waitpid子进程的一般实现">
+<meta name="twitter:description" content="web后台开发中很多框架都是prefork的进程模型的， 包括 php-fpm / flup / gunicorn 等等由主进程 fork 出一堆工作进程， 主进程监督工作进程的存活状态和数量，按照需要重启工作进程主进程的主要工作：1) 回收僵尸子进程2）重启子进程（重启策略看需求），逻辑比较简单，我们以gunicorn 为例 简单看一下代码
+–1– 主进程监听SIGCHLD信号， 创建管道, 调">
+<meta name="twitter:image" content="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title>
+  
+
+  
+    父进程waitpid子进程的一般实现 | mumumuwudi的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">mumumuwudi的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <p>web后台开发中很多框架都是prefork的进程模型的， 包括 php-fpm / flup / gunicorn 等等由主进程 fork 出<br>一堆工作进程， 主进程监督工作进程的存活状态和数量，按照需要重启工作进程主进程的主要工作：<br>1) 回收僵尸子进程<br>2）重启子进程（重启策略看需求），逻辑比较简单，我们以gunicorn 为例 简单看一下代码</p>
+<p>–1– 主进程监听SIGCHLD信号， 创建管道, 调用select睡眠等待管道中的消息<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-1.png" alt=""> </p>
+<p>–2– 收到信号时，调用waitpid回收僵尸进程，存活进程数减一，向管道中写消息，从而唤醒主进程主循环select操作返回<br><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-2.png" alt=""> </p>
+<p>–3– 主进程的主循环中收到信号后 select  返回， 检查是否需要重启子进程， 处理完后继续睡眠</p>
+<p><img src="http://raw.githubusercontent.com/wangxuemin/myblog/master/pic_bak/waitpid-3.png" alt=""><br>gunicorn把SIGCHLD和其他信号区分出来，个人感觉统一起来比较好即： 主进程收到信号后，同一将信号写入队列<br>并唤醒主循环select调用， select 返回后read出信号类型， 根据信号不通做相应的处理，如果信号为SIGCHLD此时<br>再进行waitpid和重启子进程的处理.  可以参照下php-fpm(fpm_signals.c\fpm_events.c)的处理:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注册信号，创建管道</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fpm_signals_init_main</span><span class="params">()</span>  </span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title">fpm_event_loop</span><span class="params">(<span class="keyword">int</span> err)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">   <span class="comment">//将管道读时间加入到事件循环中</span></span><br><span class="line">   <span class="comment">//fpm_event_set(&amp;signal_fd_event, fpm_signals_get_fd(), FPM_EV_READ, &amp;fpm_got_signal, NULL);   </span></span><br><span class="line">   <span class="comment">//ret = module-&gt;wait(fpm_event_queue_fd, timeout);  //等待事件发生</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//信号管道可读的的回调,读取事件类型并作相应的处理</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">fpm_got_signal</span><span class="params">(<span class="keyword">struct</span> fpm_event_s *ev, <span class="keyword">short</span> which, <span class="keyword">void</span> *arg)</span></span></span><br></pre></td></tr></table></figure>
+<p>转载请注明出处，谢谢。。</p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/icon.png"
+               alt="mumumuwudi" />
+          <p class="site-author-name" itemprop="name">mumumuwudi</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">44</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mumumuwudi</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
